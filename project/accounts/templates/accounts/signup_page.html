@@ -1,0 +1,200 @@
+{% extends 'dashboard/base_no_sidebar.html' %}
+{% load static %}
+
+{% block content %}
+<div class="container-fluid min-vh-100 d-flex align-items-center justify-content-center">
+  <div class="row w-100 shadow rounded overflow-hidden" style="max-width: 1000px; background:#fff;">
+
+    <!-- Left: Form -->
+    <div class="col-md-6 p-5">
+      <h1 class="mb-4">Kim's Antiques</h1>
+      <h3 class="mb-4">Create your account</h3>
+
+      <form id="signupForm" method="post" novalidate>
+        {% csrf_token %}
+
+        <!-- Email -->
+        <div class="mb-3">
+          {{ form.email.label_tag }}
+          {{ form.email }}
+          {% if form.email.errors %}
+            <div class="text-danger">{{ form.email.errors }}</div>
+          {% endif %}
+        </div>
+
+        <!-- Password -->
+        <div class="mb-3">
+          {{ form.password1.label_tag }}
+          <input type="password" name="password1" id="password1" class="form-control">
+          <div class="mt-2">
+            <div class="progress" style="height:6px; border-radius:4px;">
+              <div id="strength-bar" class="progress-bar" role="progressbar" style="width:0;"></div>
+            </div>
+            <small id="strength-text" class="d-block mt-1"></small>
+          </div>
+          {% if form.password1.errors %}
+            <div class="text-danger">{{ form.password1.errors }}</div>
+          {% endif %}
+        </div>
+
+        <!-- Confirm Password -->
+        <div class="mb-3">
+          {{ form.password2.label_tag }}
+          <input type="password" name="password2" id="password2" class="form-control">
+          {% if form.password2.errors %}
+            <div class="text-danger">{{ form.password2.errors }}</div>
+          {% endif %}
+        </div>
+
+        <!-- Terms -->
+        <div class="mb-3">
+          <label class="form-check-label" style="font-size:0.9rem;">
+            <input type="checkbox" name="terms" class="form-check-input me-1"> 
+            I agree to the <a href="#" class="link-primary">Terms & Conditions</a>
+          </label>
+        </div>
+
+        <button type="submit" class="btn btn-dark w-100 py-2">Sign Up</button>
+
+        <p class="mt-3 text-center">
+          Already have an account? <a href="{% url 'accounts:login_view' %}">Sign in</a>
+        </p>
+      </form>
+    </div>
+
+    <!-- Right: Image -->
+    <div class="col-md-6 d-none d-md-block" 
+         style="background: url('{% static "images/login_image.png" %}') center/cover no-repeat;">
+    </div>
+
+  </div>
+</div>
+
+<style>
+body {
+  background: #f0f4f8;
+  font-family: 'Segoe UI', sans-serif;
+}
+
+.form-control {
+  border-radius: 8px;
+  padding: 12px 15px;
+  font-size: 1rem;
+  border: 1px solid #ccc;
+}
+
+.form-control:focus {
+  border-color: #0077cc;
+  box-shadow: 0 0 0 0.2rem rgba(0,123,255,.15);
+}
+
+.btn-dark {
+  background: #000;
+  border-radius: 8px;
+}
+
+.btn-dark:hover {
+  background: #333;
+}
+
+.message-box {
+  border-radius: 8px;
+  padding: 10px 12px;
+  font-size: 0.95rem;
+  color: #0f1724;
+  background: #eef6ff;
+  border: 1px solid rgba(3, 102, 214, 0.12);
+  margin-bottom: 8px;
+  transition: all 0.15s ease-in-out;
+}
+
+.message-box.error {
+  background: #fff5f5;
+  color: #611a15;
+  border-color: rgba(220, 38, 38, 0.25);
+}
+
+.progress-bar.very-weak {background-color:#dc3545;}
+.progress-bar.weak {background-color:#fd7e14;}
+.progress-bar.medium {background-color:#ffc107;}
+.progress-bar.strong {background-color:#198754;}
+
+#strength-text {
+  font-weight: 500;
+}
+</style>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const form = document.getElementById('signupForm');
+    const password1 = document.getElementById('password1');
+    const password2 = document.getElementById('password2');
+    const messagesDiv = document.getElementById('messages-div');
+    const strengthBar = document.getElementById('strength-bar');
+    const strengthText = document.getElementById('strength-text');
+    const termsCheckbox = form.elements['terms'];
+
+    function checkPasswordStrength(password) {
+        let score = 0;
+        if (!password) return 0;
+        if (password.length >= 8) score++;
+        if (/[A-Z]/.test(password)) score++;
+        if (/[a-z]/.test(password)) score++;
+        if (/[0-9]/.test(password)) score++;
+        if (/[!@#$%^&*()_+\-=\[\]{};':"\\|,.<>\/?]/.test(password)) score++;
+        return score;
+    }
+
+    function updateStrengthMeter(score) {
+        let width = 0, text = '', cls = '';
+        if (score <= 1) { text = 'Very Weak'; width = 20; cls='very-weak'; }
+        else if (score <= 2) { text = 'Weak'; width = 40; cls='weak'; }
+        else if (score <= 4) { text = 'Medium'; width = 75; cls='medium'; }
+        else { text = 'Strong'; width = 100; cls='strong'; }
+
+        strengthBar.style.width = width + '%';
+        strengthBar.className = `progress-bar ${cls}`;
+        strengthText.textContent = text;
+    }
+
+    function showMessage(text='', type='error') {
+        if (!text) { messagesDiv.innerHTML = ''; return; }
+        const cls = type==='error' ? 'message-box error' : 'message-box';
+        messagesDiv.innerHTML = `<div class="${cls}" role="alert"><small>${text}</small></div>`;
+    }
+
+    function validatePasswords() {
+        const p1 = password1.value;
+        const p2 = password2.value;
+        const score = checkPasswordStrength(p1);
+
+        updateStrengthMeter(score);
+
+        if (p1 && p2 && p1 !== p2) {
+            showMessage('Passwords do not match.');
+            return false;
+        } else if (p1 && score < 3) {
+            showMessage('Password strength is low. Use numbers, symbols, and mix cases.');
+            return false;
+        } else {
+            showMessage('');
+            return true;
+        }
+    }
+
+    password1.addEventListener('input', validatePasswords);
+    password2.addEventListener('input', validatePasswords);
+
+    form.addEventListener('submit', function(e) {
+        if (termsCheckbox && !termsCheckbox.checked) {
+            e.preventDefault();
+            showMessage('You must agree to the Terms & Conditions.');
+            return;
+        }
+        if (!validatePasswords()) {
+            e.preventDefault();
+        }
+    });
+});
+</script>
+{% endblock %}

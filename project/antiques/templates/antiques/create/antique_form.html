@@ -1,0 +1,192 @@
+{% extends 'dashboard/base.html' %}
+{% block content %}
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+
+    <!-- Quill Editor -->
+    <link href="https://cdn.jsdelivr.net/npm/quill@2.0.2/dist/quill.snow.css" rel="stylesheet" />
+
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+        }
+
+        /* Form styles */
+        .form-control {
+            width: 100%;
+            padding: 0.75rem;
+            border-radius: 0.5rem;
+            border: 1px solid #d1d5db;
+            transition: border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out;
+            background-color: #ffffff;
+            color: #111827;
+        }
+
+        .form-control:focus {
+            border-color: #111827;
+            outline: 0;
+            box-shadow: 0 0 0 3px rgba(31, 41, 55, 0.25);
+        }
+
+        .ql-container.ql-snow {
+            min-height: 250px;
+            border-radius: 0.5rem;
+            border: 1px solid #d1d5db;
+        }
+
+        .btn-primary {
+            background-color: #111827;
+            color: white;
+            font-weight: 600;
+            padding: 0.75rem 1.5rem;
+            border-radius: 0.5rem;
+            transition: background-color 0.2s ease;
+        }
+
+        .btn-primary:hover {
+            background-color: #374151;
+        }
+
+        /* Center form and ensure full width on small screens */
+        .form-wrapper {
+            width: 100%;
+            max-width: 800px;
+            margin: 0 auto;  /* centers the container */
+        }
+    </style>
+</head>
+
+<body class="bg-gray-100 min-h-screen flex items-start justify-center pt-10 pb-10">
+
+    <div class="form-wrapper bg-white shadow-xl rounded-xl p-8 sm:p-12 border border-gray-300">
+
+        <div class="text-center mb-8">
+            <h1 class="text-3xl sm:text-4xl font-extrabold text-gray-900">
+                {% if antique %}Edit Listing: {{ antique.title }}{% else %}List a New Antique{% endif %}
+            </h1>
+            <p class="text-gray-500 mt-2">
+                {% if antique %}Update the details and images for your item.{% else %}Fill in the details below to showcase your unique item.{% endif %}
+            </p>
+        </div>
+
+        {% if form.non_field_errors %}
+        <div class="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded-lg mb-6">
+            {{ form.non_field_errors }}
+        </div>
+        {% endif %}
+
+        <form method="POST" enctype="multipart/form-data" class="space-y-6" id="antiqueForm">
+            {% csrf_token %}
+
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-6">
+
+                <div class="sm:col-span-2">
+                    {{ form.title.label_tag }}
+                    {{ form.title }}
+                    {{ form.title.errors }}
+                </div>
+
+                <div>
+                    {{ form.quantity.label_tag }}
+                    {{ form.quantity }}
+                    {{ form.quantity.errors }}
+                </div>
+
+                <div>
+                    {{ form.price.label_tag }}
+                    {{ form.price }}
+                    {{ form.price.errors }}
+                </div>
+
+                <div>
+                    {{ form.type_of_antique.label_tag }}
+                    {{ form.type_of_antique }}
+                    {{ form.type_of_antique.errors }}
+                </div>
+
+                <div class="sm:col-span-2">
+                    {{ form.dimensions.label_tag }}
+                    {{ form.dimensions }}
+                    {{ form.dimensions.errors }}
+                </div>
+
+                <div class="sm:col-span-2">
+                    {{ form.description.label_tag }}
+                    {{ form.description }}
+                    {{ form.description.errors }}
+                </div>
+
+                <div class="sm:col-span-2">
+                    {{ form.content.label_tag }}
+                    {% comment %} <div id="quill-editor-container" class="mb-2"></div> {% endcomment %}
+                    {{ form.content }}
+                    {{ form.content.errors }}
+                </div>
+
+                <div class="sm:col-span-2">
+                    {{ form.additional_info.label_tag }}
+                    {{ form.additional_info }}
+                    {{ form.additional_info.errors }}
+                </div>
+
+
+            </div>
+
+            <!-- File upload -->
+            <div>
+                <label for="id_images" class="block text-sm font-medium text-gray-900">Upload images</label>
+                <input id="id_images" name="images" type="file" accept="image/*" multiple class="mt-2 form-control">
+            </div>
+
+            <div id="image-preview" class="grid grid-cols-2 sm:grid-cols-3 gap-4 mt-4"></div>
+
+            <button type="submit" class="btn-primary w-full mt-4">
+                Save Antique
+            </button>
+
+        </form>
+
+    </div>
+
+
+    <!-- Quill JS -->
+<script src="https://cdn.jsdelivr.net/npm/quill@2.0.2/dist/quill.js"></script>
+<script>
+        const hiddenContentInput = document.getElementById('id_content');
+        const quill = new Quill('#quill-editor-container', {
+            modules: { toolbar: [['bold', 'italic', 'underline'], [{ 'list': 'bullet' }]] },
+            theme: 'snow'
+        });
+        if (hiddenContentInput.value) {
+            quill.clipboard.dangerouslyPasteHTML(hiddenContentInput.value);
+        }
+        document.getElementById('antiqueForm').onsubmit = function() {
+            hiddenContentInput.value = quill.root.innerHTML;
+        };
+
+        const input = document.getElementById('id_images');
+        const previewContainer = document.getElementById('image-preview');
+        input.addEventListener('change', () => {
+            previewContainer.innerHTML = '';
+            Array.from(input.files).forEach(file => {
+                const reader = new FileReader();
+                reader.onload = e => {
+                    const img = document.createElement('img');
+                    img.src = e.target.result;
+                    img.className = 'rounded-lg object-cover w-full h-32 border';
+                    previewContainer.appendChild(img);
+                };
+                reader.readAsDataURL(file);
+            });
+        });
+    </script>
+
+</body>
+{% endblock %}

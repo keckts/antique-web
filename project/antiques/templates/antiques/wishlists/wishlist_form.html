@@ -1,0 +1,40 @@
+{% extends 'dashboard/base.html' %}
+
+{% load widget_tweaks %}
+
+{% block content %}
+<form method="POST" class="p-4 bg-light rounded shadow-sm">
+    {% csrf_token %}
+    <h5 class="mb-3">Create a New Wishlist</h5>
+
+    <div class="mb-3">
+        {{ form.title.label_tag }}
+        {{ form.title|add_class:"form-control" }}
+        {% if form.title.errors %}
+            <div class="text-danger small mt-1">
+                {{ form.title.errors }}
+            </div>
+        {% endif %}
+    </div>
+
+    <button type="submit" class="btn btn-primary w-100 py-2">Create Wishlist</button>
+</form>
+
+<style>
+form.bg-light {
+    max-width: 400px;
+    margin: 0 auto;
+}
+
+.text-danger {
+    font-size: 0.875rem;
+}
+
+.btn-primary {
+    border-radius: 8px;
+    font-weight: 500;
+}
+</style>
+
+
+{% endblock %}

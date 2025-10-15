@@ -1,0 +1,90 @@
+{% extends 'dashboard/base.html' %}
+
+{% block content %}
+
+<div class="container mt-4">
+    <h2>Seller Information</h2>
+    <form method="post" novalidate>
+        {% csrf_token %}
+        <div class="mb-3">
+            {{ form.store_name.label_tag }}
+            {{ form.store_name }}
+            {% if form.store_name.errors %}
+                <div class="text-danger">{{ form.store_name.errors }}</div>
+            {% endif %}
+        </div>
+        <div class="mb-3">
+            {{ form.description.label_tag }}
+            {{ form.description }}
+            {% if form.description.errors %}
+                <div class="text-danger">{{ form.description.errors }}</div>
+            {% endif %}
+        </div>
+        <div class="mb-3">
+            {{ form.email.label_tag }}
+            {{ form.email }}
+            {% if form.email.errors %}
+                <div class="text-danger">{{ form.email.errors }}</div>
+            {% endif %}
+        </div>
+        <div class="mb-3">
+            {{ form.phone_number.label_tag }}
+            {{ form.phone_number }}
+            {% if form.phone_number.errors %}
+                <div class="text-danger">{{ form.phone_number.errors }}</div>
+            {% endif %}
+        </div>
+        <div class="mb-3">
+            {{ form.notes.label_tag }}
+            {{ form.notes }}
+            {% if form.notes.errors %}
+                <div class="text-danger">{{ form.notes.errors }}</div>
+            {% endif %}
+        </div>
+        <div class="mb-3">
+            {{ form.address.label_tag }}
+            {{ form.address }}
+            {% if form.address.errors %}
+                <div class="text-danger">{{ form.address.errors }}</div>
+            {% endif %}
+        </div>
+        <div class="mb-3">
+            {{ form.is_verified.label_tag }}
+            {{ form.is_verified }}
+            {% if form.is_verified.errors %}
+                <div class="text-danger">{{ form.is_verified.errors }}</div>
+            {% endif %}
+        </div>
+        <div class="mb-3">
+            {{ form.facebook.label_tag }}
+            {{ form.facebook }}
+            {% if form.facebook.errors %}
+                <div class="text-danger">{{ form.facebook.errors }}</div>
+            {% endif %}
+        </div>
+        <div class="mb-3">
+            {{ form.instagram.label_tag }}
+            {{ form.instagram }}
+            {% if form.instagram.errors %}
+                <div class="text-danger">{{ form.instagram.errors }}</div>
+            {% endif %}
+        </div>
+        <div class="mb-3">
+            {{ form.twitter.label_tag }}
+            {{ form.twitter }}
+            {% if form.twitter.errors %}
+                <div class="text-danger">{{ form.twitter.errors }}</div>
+            {% endif %}
+        </div>
+        <div class="mb-3">
+            {{ form.website.label_tag }}
+            {{ form.website }}
+            {% if form.website.errors %}
+                <div class="text-danger">{{ form.website.errors }}</div>
+            {% endif %}
+        </div>
+        <button type="submit" class="btn btn-primary">Save</button>
+    </form>
+</div>
+
+{% endblock %}

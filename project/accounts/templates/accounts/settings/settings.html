@@ -1,0 +1,162 @@
+{% extends 'dashboard/base.html' %}
+
+{% block content %}
+<div class="settings-container">
+  <h1>Account Settings</h1>
+
+  <form method="post" class="settings-form">
+    {% csrf_token %}
+    {{ form.as_p }}
+    <button type="submit">Save changes</button>
+  </form>
+
+  <div class="account-actions">
+    <a href="{% url 'accounts:logout_view' %}" 
+       class="btn btn-danger"
+       onclick="return confirm('Are you sure you want to log out?');">
+      Logout
+    </a>
+
+    {% if request.user.is_email_verified %}
+      <p class="verified-text">Your email is verified.</p>
+    {% else %}
+      <p class="unverified-text">Your account is not verified. Please verify for full access</p>
+      <a href="#" class="btn btn-primary">Resend Verification Email</a>
+    {% endif %}
+
+    <a href="{% url 'payments:orders' %}" class="btn btn-secondary">View Orders</a>
+
+    <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#exampleModal">
+      Verify Password
+    </button>
+  </div>
+
+  {% if user.is_superuser %}
+    <div class="superuser-actions">
+      <a class="btn" href="{% url 'accounts:seller_form' %}">Become a Seller</a>
+      <a class="btn" href="{% url 'admin:index' %}">Admin Dashboard</a>
+    </div>
+  {% endif %}
+</div>
+
+<!-- Modal -->
+<div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-sm">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h1 class="modal-title fs-5" id="exampleModalLabel">Verify Password</h1>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+        <form id="verifyPasswordForm" class="modal-form">
+          {% csrf_token %}
+          <label for="password">Enter your password:</label>
+          <input type="password" id="password" name="password" required>
+          <button type="submit" class="btn mt-2">Verify</button>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
+
+<style>
+/* Container */
+.settings-container {
+    max-width: 600px;
+    margin: 2rem auto;
+    padding: 2rem;
+    background: #fff;
+    border-radius: 12px;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+}
+
+/* Heading */
+.settings-container h1 {
+    text-align: center;
+    margin-bottom: 2rem;
+    font-weight: 600;
+}
+
+/* Forms */
+.settings-form {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+}
+
+.settings-form input, 
+.settings-form select, 
+.settings-form textarea {
+    padding: 0.5rem 0.75rem;
+    border: 1px solid #ccc;
+    border-radius: 6px;
+    font-size: 1rem;
+}
+
+/* Text */
+.verified-text {
+    color: #222;
+    margin: 0.5rem 0;
+}
+
+.unverified-text {
+    color: #222;
+    font-weight: 500;
+    margin: 0.5rem 0;
+}
+
+/* Layout sections */
+.account-actions {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+    margin-top: 1.5rem;
+    align-items: center;
+}
+
+.superuser-actions {
+    margin-top: 2rem;
+    display: flex;
+    gap: 1rem;
+    flex-wrap: wrap;
+    justify-content: center;
+}
+
+/* Modal */
+.modal-form {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+}
+
+.modal-form input {
+    border: 1px solid #ccc;
+    border-radius: 6px;
+    padding: 0.5rem;
+}
+</style>
+
+<script>
+document.getElementById('verifyPasswordForm').addEventListener('submit', function(event) {
+  event.preventDefault();
+  const formData = new FormData(this);
+
+  fetch("{% url 'accounts:verify_password' %}", {
+    method: 'POST',
+    headers: {
+      'X-CSRFToken': formData.get('csrfmiddlewaretoken')
+    },
+    body: formData
+  })
+  .then(response => response.json())
+  .then(data => {
+      if (data.valid) {
+          alert('Password is valid!');
+      } else {
+          alert('Invalid password. Please try again.');
+      }
+  })
+  .catch(error => console.error('Error:', error));
+});
+</script>
+{% endblock %}

@@ -1,0 +1,385 @@
+{% extends 'dashboard/base.html' %}
+{% load static %}
+
+{% block content %}
+<style>
+/* Wishlist Detail Container */
+.wishlist-container {
+    max-width: 1400px;
+    margin: 60px auto;
+    padding: 40px;
+}
+
+.wishlist-title {
+    font-size: 2.5rem;
+    font-weight: 300;
+    text-align: center;
+    margin-bottom: 3rem;
+    letter-spacing: -0.5px;
+    color: #000;
+    padding-bottom: 1.5rem;
+    border-bottom: 1px solid #e5e5e5;
+}
+
+/* Antiques Grid */
+.antiques-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    gap: 2rem;
+    margin-top: 2rem;
+}
+
+/* Antique Card */
+.antique-card {
+    background: #fff;
+    border: 1px solid #e5e5e5;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    overflow: hidden;
+}
+
+.antique-card:hover {
+    transform: translateY(-8px);
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.08);
+    border-color: #000;
+}
+
+/* Image Wrapper */
+.card-img-wrapper {
+    position: relative;
+    width: 100%;
+    height: 320px;
+    overflow: hidden;
+    background-color: #f9f9f9;
+}
+
+.card-img-wrapper img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: transform 0.3s ease;
+}
+
+.antique-card:hover .card-img-wrapper img {
+    transform: scale(1.05);
+}
+
+/* Image Carousel */
+.image-carousel {
+    position: relative;
+    width: 100%;
+    height: 100%;
+}
+
+.carousel-image {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    opacity: 0;
+    transition: opacity 0.4s ease;
+}
+
+.carousel-image.active {
+    opacity: 1;
+}
+
+/* Carousel Controls */
+.carousel-controls {
+    position: absolute;
+    top: 50%;
+    left: 0;
+    right: 0;
+    transform: translateY(-50%);
+    display: flex;
+    justify-content: space-between;
+    padding: 0 10px;
+    opacity: 0;
+    transition: opacity 0.3s ease;
+}
+
+.antique-card:hover .carousel-controls {
+    opacity: 1;
+}
+
+.carousel-btn {
+    background-color: rgba(0, 0, 0, 0.6);
+    color: #fff;
+    border: none;
+    width: 36px;
+    height: 36px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: background-color 0.3s ease;
+    font-size: 0.9rem;
+}
+
+.carousel-btn:hover {
+    background-color: rgba(0, 0, 0, 0.9);
+}
+
+/* Image Dots */
+.image-dots {
+    position: absolute;
+    bottom: 15px;
+    left: 50%;
+    transform: translateX(-50%);
+    display: flex;
+    gap: 8px;
+}
+
+.dot {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background-color: rgba(255, 255, 255, 0.5);
+    transition: background-color 0.3s ease;
+}
+
+.dot.active {
+    background-color: #fff;
+}
+
+/* Card Body */
+.card-body {
+    padding: 1.5rem;
+}
+
+.card-title {
+    font-size: 1.2rem;
+    font-weight: 400;
+    margin-bottom: 0.5rem;
+    color: #000;
+    letter-spacing: 0.3px;
+}
+
+.card-type {
+    font-size: 0.85rem;
+    font-weight: 300;
+    color: #666;
+    margin-bottom: 0.8rem;
+    letter-spacing: 0.5px;
+}
+
+.card-description {
+    font-size: 0.9rem;
+    font-weight: 300;
+    color: #555;
+    line-height: 1.6;
+    margin-bottom: 1rem;
+    letter-spacing: 0.2px;
+}
+
+/* Card Footer */
+.card-footer {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding-top: 1rem;
+    border-top: 1px solid #f0f0f0;
+}
+
+.price-tag {
+    font-size: 1.3rem;
+    font-weight: 400;
+    color: #000;
+    margin: 0;
+    letter-spacing: 0.3px;
+}
+
+/* Stock Badge */
+.stock-badge {
+    font-size: 0.75rem;
+    font-weight: 400;
+    padding: 4px 12px;
+    border-radius: 2px;
+    letter-spacing: 0.5px;
+    text-transform: uppercase;
+}
+
+.stock-badge.in-stock {
+    background-color: #000;
+    color: #fff;
+}
+
+.stock-badge.out-of-stock {
+    background-color: #e5e5e5;
+    color: #666;
+}
+
+/* Empty State */
+.no-results {
+    text-align: center;
+    padding: 4rem 2rem;
+    color: #666;
+}
+
+.no-results i {
+    font-size: 3rem;
+    margin-bottom: 1rem;
+    opacity: 0.3;
+}
+
+.no-results p {
+    font-size: 1.1rem;
+    font-weight: 300;
+    letter-spacing: 0.3px;
+}
+
+.empty-wishlist {
+    text-align: center;
+    padding: 4rem 2rem;
+    color: #666;
+}
+
+.empty-wishlist p {
+    font-size: 1.1rem;
+    font-weight: 300;
+    line-height: 1.8;
+    letter-spacing: 0.3px;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+    .wishlist-container {
+        margin: 30px auto;
+        padding: 30px 20px;
+    }
+
+    .wishlist-title {
+        font-size: 2rem;
+        margin-bottom: 2rem;
+    }
+
+    .antiques-grid {
+        grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+        gap: 1.5rem;
+    }
+
+    .card-img-wrapper {
+        height: 280px;
+    }
+
+    .card-body {
+        padding: 1.2rem;
+    }
+
+    .card-title {
+        font-size: 1.1rem;
+    }
+
+    .price-tag {
+        font-size: 1.2rem;
+    }
+}
+
+@media (max-width: 480px) {
+    .wishlist-container {
+        padding: 20px 15px;
+    }
+
+    .wishlist-title {
+        font-size: 1.8rem;
+    }
+
+    .antiques-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .card-img-wrapper {
+        height: 250px;
+    }
+}
+</style>
+
+<div class="wishlist-container">
+    <h2 class="wishlist-title">{{ wishlist.title }}</h2>
+
+    {% if wishlist.antiques.all %}
+        <div class="antiques-grid">
+            {% for a in wishlist.antiques.all %}
+                <div class="antique-card" 
+                     data-title="{{ a.title|lower }}" 
+                     data-description="{{ a.description|lower }}"
+                     data-type="{{ a.type_of_antique }}"
+                     onclick="window.location.href='{% url 'antiques:antique_detail' a.short_id a.slug %}'">
+                    
+                    <div class="card-img-wrapper">
+                        {% if a.images.exists %}
+                            <div class="image-carousel" data-antique-id="{{ a.id }}">
+                                {% for img in a.images.all %}
+                                    <img src="{{ img.image.url }}" 
+                                         alt="{{ a.title }}" 
+                                         class="carousel-image {% if forloop.first %}active{% endif %}"
+                                         loading="lazy">
+                                {% endfor %}
+                                
+                                {% if a.images.count > 1 %}
+                                    <div class="carousel-controls">
+                                        <button class="carousel-btn prev-btn" onclick="event.stopPropagation(); changeImage(this, -1)">‹</button>
+                                        <button class="carousel-btn next-btn" onclick="event.stopPropagation(); changeImage(this, 1)">›</button>
+                                    </div>
+                                    <div class="image-dots">
+                                        {% for img in a.images.all %}
+                                            <span class="dot {% if forloop.first %}active{% endif %}"></span>
+                                        {% endfor %}
+                                    </div>
+                                {% endif %}
+                            </div>
+                        {% else %}
+                            <img src="{% static 'images/placeholder.png' %}" alt="No Image Available">
+                        {% endif %}
+                    </div>
+
+                    <div class="card-body">
+                        <h5 class="card-title">{{ a.title }}</h5>
+                        <p class="card-type">{{ a.type_of_antique }}</p>
+                        <p class="card-description">{{ a.description|truncatewords:15 }}</p>
+                        <div class="card-footer">
+                            <p class="price-tag">${{ a.price }}</p>
+                            {% if a.quantity > 0 %}
+                                <span class="stock-badge in-stock">In Stock</span>
+                            {% else %}
+                                <span class="stock-badge out-of-stock">Sold Out</span>
+                            {% endif %}
+                        </div>
+                    </div>
+                </div>
+            {% endfor %}
+        </div>
+    {% else %}
+        <div class="empty-wishlist">
+            <p>This wishlist is empty. Start adding your favorite antiques to build your collection.</p>
+        </div>
+    {% endif %}
+</div>
+
+<script>
+function changeImage(button, direction) {
+    const carousel = button.closest('.image-carousel');
+    const images = carousel.querySelectorAll('.carousel-image');
+    const dots = carousel.querySelectorAll('.dot');
+    
+    let currentIndex = 0;
+    images.forEach((img, index) => {
+        if (img.classList.contains('active')) {
+            currentIndex = index;
+        }
+    });
+    
+    images[currentIndex].classList.remove('active');
+    dots[currentIndex].classList.remove('active');
+    
+    let newIndex = currentIndex + direction;
+    if (newIndex >= images.length) newIndex = 0;
+    if (newIndex < 0) newIndex = images.length - 1;
+    
+    images[newIndex].classList.add('active');
+    dots[newIndex].classList.add('active');
+}
+</script>
+{% endblock %}

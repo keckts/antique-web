@@ -1,0 +1,58 @@
+{% extends 'dashboard/base_no_sidebar.html' %}
+{% load static %}
+
+{% block content %}
+<div class="container my-5">
+    <div class="row justify-content-center">
+        <div class="col-lg-10">
+            <article class="bg-white p-4 p-md-5 shadow-lg rounded-4">
+                
+                <!-- Hero Image -->
+                {% if post.image %}
+                <figure class="text-center mb-5">
+                    <img src="{{ post.image.url }}" class="img-fluid rounded-3" alt="{{ post.title }}" style="max-height: 500px; width: 100%; object-fit: cover;">
+                </figure>
+                {% endif %}
+
+                <!-- Title and Metadata -->
+                <header class="mb-4 pb-3 border-bottom text-center">
+                    <h1 class="display-5 fw-bolder">{{ post.title }}</h1>
+                    <div class="text-muted fst-italic">
+                        By {{ username }} on {{ post.created_at|date:"F j, Y" }}
+                        <span class="badge bg-secondary ms-3">{{ post.topic|default:"General" }}</span>
+                    </div>
+                </header>
+
+                <!-- Post Content -->
+                <section class="lead fs-5 blog-content">
+                    {% comment %} 
+                        The content should be rendered without escaping if you are using an HTML editor 
+                        (e.g., TinyMCE) and trust the author. Use |safe only if the content is safe.
+                    {% endcomment %}
+                    {{ post.content|safe }} 
+                </section>
+            
+            </article>
+
+            <!-- Back to Blog List Link -->
+            <div class="text-center mt-5">
+                <a href="{% url 'service:blogs' %}" class="btn btn-outline-dark">
+                    &leftarrow; Back to Blogs
+                </a>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+/* Style for content readability */
+.blog-content p, .blog-content li {
+    line-height: 1.8;
+    margin-bottom: 1.5rem;
+}
+.img-fluid {
+    max-width: 100%;
+    height: auto;
+}
+</style>
+{% endblock %}

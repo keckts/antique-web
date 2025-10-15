@@ -1,0 +1,37 @@
+{% extends 'dashboard/base.html' %}
+{% load static %}
+
+{% block content %}
+<link rel="stylesheet" href="{% static 'css/antiques/wishlists.css' %}">
+
+<div class="wishlist-container">
+    <h2 class="wishlist-title">Your Wishlists</h2>
+    
+    {% if wishlists %}
+        <div class="wishlist-list">
+            {% for wishlist in wishlists %}
+                <div class="wishlist-card" onclick="window.location.href='{% url 'antiques:wishlist_detail' wishlist.pk %}'">
+                    <div class="wishlist-info">
+                        <h3>{{ wishlist.title }}</h3>
+                        <p class="wishlist-count">{{ wishlist.antiques.count }} item{{ wishlist.antiques.count|pluralize }}</p>
+                    </div>
+                    <div class="wishlist-actions" onclick="event.stopPropagation();">
+                        <a href="{% url 'antiques:edit_wishlist' wishlist.pk %}" class="icon-btn edit" title="Edit">
+                            <span class="icon"><i class="fas fa-edit"></i></span>
+                        </a>
+                        <a href="{% url 'antiques:delete_wishlist' wishlist.pk %}" class="icon-btn delete" title="Delete">
+                            <span class="icon"><i class="fas fa-trash"></i></span>
+                        </a>
+                    </div>
+                </div>
+            {% endfor %}
+        </div>
+    {% else %}
+        <p class="empty">No wishlists found. Create your first wishlist to start collecting your favorite antiques.</p>
+    {% endif %}
+    
+    <div class="create-btn-container">
+        <a href="{% url 'antiques:create_wishlist' %}" class="btn-main">Create New Wishlist</a>
+    </div>
+</div>
+{% endblock %}

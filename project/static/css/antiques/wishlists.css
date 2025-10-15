@@ -1,0 +1,213 @@
+/* Wishlist Container */
+.wishlist-container {
+    max-width: 900px;
+    margin: 60px auto;
+    padding: 40px;
+    background: #fff;
+    border: 1px solid #e5e5e5;
+}
+
+/* Title */
+.wishlist-title {
+    font-size: 2.5rem;
+    font-weight: 300;
+    text-align: center;
+    margin-bottom: 3rem;
+    letter-spacing: -0.5px;
+    color: #000;
+    padding-bottom: 1.5rem;
+    border-bottom: 1px solid #e5e5e5;
+}
+
+/* Wishlist List */
+.wishlist-list {
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+    margin-bottom: 3rem;
+}
+
+/* Wishlist Card */
+.wishlist-card {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 2rem;
+    border: 1px solid #e5e5e5;
+    background: #fff;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.wishlist-card:hover {
+    border-color: #000;
+    transform: translateY(-4px);
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.08);
+}
+
+/* Wishlist Info */
+.wishlist-info {
+    flex: 1;
+}
+
+.wishlist-info h3 {
+    font-size: 1.5rem;
+    font-weight: 400;
+    margin-bottom: 0.5rem;
+    letter-spacing: 0.5px;
+    color: #000;
+}
+
+.wishlist-count {
+    font-size: 0.9rem;
+    font-weight: 300;
+    color: #666;
+    letter-spacing: 0.3px;
+    margin: 0;
+}
+
+/* Wishlist Actions */
+.wishlist-actions {
+    display: flex;
+    gap: 1rem;
+}
+
+/* Icon Buttons */
+.icon-btn {
+    display: inline-flex;
+    justify-content: center;
+    align-items: center;
+    width: 40px;
+    height: 40px;
+    background-color: #000;
+    color: #fff;
+    text-decoration: none;
+    transition: all 0.3s ease;
+    border: 1px solid #000;
+}
+
+.icon-btn .icon {
+    font-size: 1.2rem;
+    font-weight: 300;
+    color: #fff;
+}
+
+.icon-btn:hover {
+    background-color: #fff;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+}
+
+.icon-btn.edit:hover .icon {
+    color: #000;
+}
+
+.icon-btn.delete {
+    background-color: #fff;
+    border: 1px solid #e5e5e5;
+}
+
+.icon-btn.delete .icon {
+    color: #000;
+}
+
+.icon-btn.delete:hover {
+    background-color: #dc3545;
+    border-color: #dc3545;
+}
+
+.icon-btn.delete:hover .icon {
+    color: #fff;
+}
+
+/* Create Button Container */
+.create-btn-container {
+    text-align: center;
+    padding-top: 2rem;
+    border-top: 1px solid #e5e5e5;
+}
+
+/* Main Button */
+.btn-main {
+    display: inline-block;
+    padding: 14px 40px;
+    background-color: #000;
+    color: #fff;
+    text-decoration: none;
+    border: 2px solid #000;
+    font-weight: 400;
+    letter-spacing: 1px;
+    font-size: 0.9rem;
+    transition: all 0.3s ease;
+}
+
+.btn-main:hover {
+    background-color: #fff;
+    color: #000;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+
+/* Empty State */
+.empty {
+    text-align: center;
+    font-size: 1.1rem;
+    font-weight: 300;
+    color: #666;
+    padding: 3rem 2rem;
+    line-height: 1.8;
+    letter-spacing: 0.3px;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+    .wishlist-container {
+        margin: 30px auto;
+        padding: 30px 20px;
+    }
+
+    .wishlist-title {
+        font-size: 2rem;
+        margin-bottom: 2rem;
+    }
+
+    .wishlist-card {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 1.5rem;
+        padding: 1.5rem;
+    }
+
+    .wishlist-actions {
+        width: 100%;
+        justify-content: flex-end;
+    }
+
+    .wishlist-info h3 {
+        font-size: 1.3rem;
+    }
+
+    .btn-main {
+        padding: 12px 30px;
+        font-size: 0.85rem;
+    }
+}
+
+@media (max-width: 480px) {
+    .wishlist-container {
+        padding: 20px 15px;
+    }
+
+    .wishlist-title {
+        font-size: 1.8rem;
+    }
+
+    .icon-btn {
+        width: 36px;
+        height: 36px;
+    }
+
+    .icon-btn .icon {
+        font-size: 1rem;
+    }
+}

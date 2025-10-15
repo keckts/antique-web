@@ -1,0 +1,154 @@
+{% extends 'dashboard/base_no_sidebar.html' %}
+{% load static %}
+{% load widget_tweaks %}
+
+{% block content %}
+<div class="container-fluid min-vh-100 d-flex align-items-center justify-content-center">
+  <div class="row w-100 shadow rounded overflow-hidden" style="max-width: 1000px; background:#fff;">
+    
+    <!-- Left: Form -->
+    <div class="col-md-6 p-5">
+      <h1 class="mb-4">Kim's Antiques</h1>
+      <h3 class="mb-4">Welcome back — sign in</h3>
+
+      <form id="loginForm" method="post" novalidate>
+        {% csrf_token %}
+
+        <div class="mb-3">
+          {{ form.username.label_tag }}
+          {{ form.username|add_class:"form-control"|attr:"placeholder:Email" }}
+          <div class="text-danger" id="username-error"></div>
+        </div>
+
+        <div class="mb-3">
+          {{ form.password.label_tag }}
+          {{ form.password|add_class:"form-control"|attr:"placeholder:Password" }}
+          <div class="text-danger" id="password-error"></div>
+        </div>
+
+        <div class="d-flex justify-content-between align-items-center mb-3">
+          
+          <a href="#" class="small">Forgot password?</a>
+        </div>
+
+        <button type="submit" class="btn btn-dark w-100 py-2">Sign In</button>
+
+      </form>
+      <div class="form-errors mt-3" id="errorsDiv" style="display: none;">
+            <div class="error-item">
+              <i class="bi bi-exclamation-circle"></i> <span id="form-errors"> </span>
+            </div>
+      </div>
+      <a href="{% url 'accounts:signup_view' %}" class="d-block text-center mt-3">Don't have an account? Sign Up</a>
+    </div>
+
+
+
+    <!-- Right: Image -->
+    <div class="col-md-6 d-none d-md-block" 
+         style="background: url('{% static "images/login_image.png" %}') center/cover no-repeat;">
+    </div>
+
+  </div>
+</div>
+
+<style>
+.form-control {
+  border-radius: 8px;
+  padding: 12px 15px;
+  font-size: 1rem;
+  border: 1px solid #ccc;
+}
+.form-control:focus {
+  border-color: #0077cc;
+  box-shadow: 0 0 0 0.2rem rgba(0,123,255,.15);
+}
+.btn-dark {
+  background: #000;
+  border-radius: 8px;
+}
+.btn-dark:hover {
+  background: #333;
+}
+.text-danger {
+  font-size: 0.875rem;
+  margin-top: 4px;
+}
+</style>
+
+<style>
+  .form-errors {
+  background-color: #fff3f3;
+  border: 1px solid #ffcccc;
+  border-radius: 8px;
+  padding: 10px 15px;
+  margin-top: 15px;
+  color: #cc0000;
+  font-size: 0.9rem;
+  animation: fadeIn 0.3s ease;
+}
+
+.form-errors .error-item {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  margin-bottom: 5px;
+}
+
+.form-errors .error-item:last-child {
+  margin-bottom: 0;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(3px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+</style>
+
+<script>
+document.addEventListener("DOMContentLoaded", () => {
+    const form = document.getElementById("loginForm");
+    const csrfToken = document.querySelector("[name=csrfmiddlewaretoken]").value;
+    const errorText = document.getElementById("form-errors");
+    const formErrorsDiv = document.getElementById("errorsDiv");
+
+    form.addEventListener("submit", async (e) => { // <-- add async here
+      e.preventDefault();
+      form.disabled = true;
+
+      const formData = new FormData(form);
+      const response = await fetch(form.action, {
+        method: "POST",
+        body: formData,
+        headers: {
+          'X-Requested-With': 'XMLHttpRequest',
+          'X-CSRFToken': csrfToken
+        }
+      });
+
+      const data = await response.json();
+
+      if (data.success) {
+        window.location.href = data.redirect;
+      } else {
+        form.disabled = false;
+        // clear previous errors
+        errorText.textContent = "";
+        document.querySelectorAll(".text-danger").forEach(div => div.textContent = "");
+
+        for (const [field, messages] of Object.entries(data.errors)) {
+          const errorDiv = document.getElementById(`${field}-error`);
+          if (errorDiv) {
+            errorDiv.textContent = messages.join(" ");
+          } else {
+            formErrorsDiv.style.display = "block";
+            errorText.textContent = messages.join(" ");
+          }
+        }
+      }
+    });
+});
+</script>
+
+
+{% endblock %}
