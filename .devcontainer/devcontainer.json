@@ -1,0 +1,15 @@
+{
+  "name": "Henry's codespace environment",
+  "image": "mcr.microsoft.com/devcontainers/python:3.12",
+  "customizations": {
+    "vscode": {
+      "extensions": [
+        "ms-python.python",
+        "vscodevim.vim",
+        "batisteo.vscode-django",
+        "wakatime.vscode-wakatime",
+        "esbenp.prettier-vscode"
+      ]
+    }
+  }
+}
