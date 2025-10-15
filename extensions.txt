@@ -1,0 +1,12 @@
+Extensions installed on Codespaces: stunning dollop:
+github.codespaces
+github.github-vscode-theme
+github.vscode-pull-request-github
+ms-python.python
+vscodevim.vim
+batisteo.vscode-django
+wakatime.vscode-wakatime
+esbenp.prettier-vscode
+ms-toolsai.jupyter
+ms-azuretools.vscode-docker
+
