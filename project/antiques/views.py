@@ -1,3 +1,5 @@
+# antiques/views.py
+
 from django.http import JsonResponse
 from django.shortcuts import render, redirect, get_object_or_404
 from .models import Antique, Wishlist, AntiqueImage, DailyPick
@@ -95,9 +97,17 @@ def antique_form(request, slug=None):
 
         form = AntiqueForm(instance=antique)
         
-    initial_data = {'title': random_text(), 'description': 'A beautiful antique item', 'content': 'Detailed content about the antique', 'price': '100.00', 'type_of_antique': 'General'}
 
-    form = AntiqueForm(initial=initial_data)
+    if request.method == "GET" and not editing:
+        initial_data = {
+            'title': random_text(),
+            'description': 'A beautiful antique item',
+            'content': 'Detailed content about the antique',
+            'price': '100.00',
+            'type_of_antique': 'General',
+        }
+        form = AntiqueForm(initial=initial_data)
+
 
     return render(request, "antiques/create/antique_form.html", {
         "form": form,

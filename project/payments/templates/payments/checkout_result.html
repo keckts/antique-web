@@ -1,0 +1,20 @@
+{% extends 'dashboard/base.html' %}
+{% load static %}
+
+{% block content %}
+<div class="checkout-result-container" style="text-align:center; margin:50px;">
+    {% if success %}
+        <h1>🎉 Payment Successful!</h1>
+        <p>Thank you for your purchase. Your antique is on its way!</p>
+        <a href="{% url 'antiques:view_antiques' %}" class="btn-primary">Back to Browse</a>
+    {% elif canceled %}
+        <h1>⚠️ Payment Canceled</h1>
+        <p>Your payment was canceled. You can try again anytime.</p>
+        <a href="{% url 'antiques:view_antiques' %}" class="btn-secondary">Back to Browse</a>
+    {% else %}
+        <h1>ℹ️ Checkout</h1>
+        <p>No status available. Please go back and try again.</p>
+        <a href="{% url 'antiques:view_antiques' %}" class="btn-primary">Back to Browse</a>
+    {% endif %}
+</div>
+{% endblock %}

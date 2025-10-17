@@ -1,0 +1,18 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <title>Verify Your Email</title>
+</head>
+<body style="font-family: Arial, sans-serif; text-align: center; padding: 20px;">
+  <h2 style="color: #333;">Hi {{ user.get_full_name|default:user.username }},</h2>
+  <p>Thank you for signing up! Please verify your email using the code below:</p>
+  
+  <div style="font-size: 2rem; font-weight: bold; margin: 20px 0; color: #4CAF50;">
+    {{ code }}
+  </div>
+
+  <p>This code will expire in 30 minutes.</p>
+  <p>If you didn't request this, you can ignore this email.</p>
+</body>
+</html>

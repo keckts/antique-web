@@ -262,6 +262,15 @@
   <!-- Action Buttons -->
   {% if not antique.is_sold %}
     <div class="action-buttons">
+      {% if antique.stripe_price_id and not antique.is_sold %}
+        <form id="checkout-form" action="{% url 'payments:create_order' antique.pk %}" method="POST">
+          {% csrf_token %}
+          <button type="submit" class="btn-primary btn-large">
+            <i class="fa-solid fa-cart-shopping"></i> Buy Now
+          </button>
+        </form>
+      {% endif %}
+
       <a href="mailto:{{ antique.seller.email }}" class="btn-primary btn-large">
         <i class="fa-solid fa-message"></i> Contact Seller
       </a>

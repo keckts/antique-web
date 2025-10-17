@@ -1,7 +1,53 @@
-{% extends 'dashboard/base.html' %}
+{% extends "dashboard/base.html" %}
+{% load static %}
 
 {% block content %}
+<div style="max-width: 900px; margin: auto; padding: 20px;">
+    <h1 style="font-size: 2rem; font-weight: bold; margin-bottom: 20px;">My Orders</h1>
 
-<h2> Your Orders </h2>
+    {% if orders %}
+        {% for order in orders %}
+            <div style="border: 1px solid #ccc; border-radius: 8px; padding: 15px; margin-bottom: 20px;">
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px;">
+                    <span style="font-weight: bold;">Order ID: {{ order.id }}</span>
+                    <span style="padding: 5px 10px; border-radius: 12px; color: white; 
+                        {% if order.status == 'paid' %}background-color: #4CAF50;
+                        {% elif order.status == 'pending' %}background-color: #FF9800;
+                        {% elif order.status == 'canceled' %}background-color: #F44336;
+                        {% else %}background-color: #999;{% endif %}">
+                        {{ order.get_status_display }}
+                    </span>
+                </div>
 
+                {% with total=0 %}
+                {% for item in order.orderitem_set.all %}
+                    <div style="display: flex; align-items: center; margin-bottom: 10px; border-top: 1px solid #eee; padding-top: 10px;">
+                        {% if item.antique.images.first %}
+                            <img src="{{ item.antique.images.first.image.url }}" alt="{{ item.antique.title }}" 
+                                 style="width: 80px; height: 80px; object-fit: cover; margin-right: 15px; border-radius: 4px;">
+                        {% else %}
+                            <div style="width: 80px; height: 80px; background-color: #eee; display: flex; align-items: center; justify-content: center; margin-right: 15px; border-radius: 4px;">
+                                No Image
+                            </div>
+                        {% endif %}
+                        <div>
+                            <div style="font-weight: bold;">{{ item.antique.title }}</div>
+                            <div>Quantity: {{ item.quantity }}</div>
+                            <div>Price: ${{ item.antique.price }}</div>
+                        </div>
+                    </div>
+                    {% with total=total|add:item.antique.price %}
+                    {% endwith %}
+                {% endfor %}
+
+                <div style="text-align: right; font-weight: bold; margin-top: 10px;">
+                    Total: ${{ total }}
+                </div>
+                {% endwith %}
+            </div>
+        {% endfor %}
+    {% else %}
+        <p style="color: #666;">You have no orders yet.</p>
+    {% endif %}
+</div>
 {% endblock %}

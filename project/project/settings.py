@@ -1,5 +1,8 @@
 from pathlib import Path
 import os
+from dotenv import load_dotenv
+
+load_dotenv()  # Load environment variables from a .env file if present
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -14,7 +17,7 @@ SECRET_KEY = 'django-insecure-v%%c)t2gpw$7j2b@i8j7zjc5r-m#8-d$(nfo$z6ld%*t!3ju(k
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['https://stunning-dollop-qw5g9q4v5rg2xxwj-8000.app.github.dev', 'localhost', 'localhost:8000', '127.0.0.1']
 
 
 # Application definition
@@ -131,3 +134,22 @@ MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 MEDIA_URL = '/media/'
 
 AUTH_USER_MODEL = 'accounts.CustomUser'
+
+STRIPE_SECRET_KEY = os.getenv('STRIPE_SECRET_KEY')
+STRIPE_PUBLISHABLE_KEY = os.getenv('STRIPE_PUBLISHABLE_KEY')
+STRIPE_WEBHOOK_SECRET = os.getenv('STRIPE_WEBHOOK_SECRET')
+
+CSRF_TRUSTED_ORIGINS = [
+    "https://localhost:8000",
+    "http://localhost:8000",  # if you also test HTTP
+    "https://127.0.0.1:8000",
+    "https://stunning-dollop-qw5g9q4v5rg2xxwj-8000.app.github.dev",
+]
+
+# Sends emails to the console instead of actually sending them
+# CHANGE IN PRODUCTION
+EMAIL_BACKEND = "django.core.mail.backends.console.EmailBackend"
+EMAIL_HOST = "localhost"
+EMAIL_PORT = 1025  # Not used for console backend, just for reference
+EMAIL_USE_TLS = False
+DEFAULT_FROM_EMAIL = "no-reply@example.com"

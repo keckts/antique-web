@@ -11,5 +11,8 @@ urlpatterns = [
     path('settings/', views.settings, name='settings'),
     path('seller-form/', views.seller_form, name='seller_form'),  # New URL for seller form
     
-    path('verify-password/', views.verify_password, name='verify_password'),  # New URL for password verification
+    path('send-verification-code/', views.send_verification_code_ajax, name='send_verification_code_ajax'),
+    path('verify-email/', views.verify_email_ajax, name='verify_email_ajax'),
+    path('verify-password/', views.verify_password, name='verify_password'),
 ]
+

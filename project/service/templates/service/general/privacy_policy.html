@@ -1,5 +1,67 @@
 {% extends 'dashboard/base.html' %}
 
 {% block content %}
-<h1>Privacy Policy</h1>
+<div class="privacy-wrapper" style="max-width:900px; margin:auto; padding:20px; font-family:Arial, sans-serif; line-height:1.6; color:#333;">
+    
+    <h1 style="text-align:center; margin-bottom:20px;">Privacy Policy</h1>
+    <p style="text-align:center; font-size:14px; color:#666;">Effective Date: 17/10/2025</p>
+
+    <h2>1. Website Information</h2>
+    <p>Website: <strong>Kim's Antiques</strong><br>
+    Address: 132 Drummond St, Oakleigh, 3166, Melbourne, VIC, Australia<br>
+    Email: <a href="mailto:kimsantiques@gmail.com">kimsantiques@gmail.com</a><br>
+    Phone: <a href="tel:0418456646">0418 456 646</a></p>
+
+    <h2>2. Data We Collect</h2>
+    <p>We collect the following information:</p>
+    <ul>
+        <li>Name, email, and address</li>
+        <li>Payment information</li>
+        <li>Browsing behaviour on our website</li>
+    </ul>
+    <p>Methods of collection include forms, cookies, analytics tools, and our payment gateway (Stripe).</p>
+
+    <h2>3. How We Use Your Data</h2>
+    <p>Your information is used for:</p>
+    <ul>
+        <li>Processing payments and managing subscriptions</li>
+        <li>Delivering products or services</li>
+        <li>Improving the website experience</li>
+        <li>Sending newsletters and marketing communications</li>
+    </ul>
+    <p>We may share your data with Stripe for payment processing and with Google Ads for advertising purposes.</p>
+
+    <h2>4. Cookies & Tracking</h2>
+    <p>Cookies help us improve your experience and analyse site usage. You can manage cookies through your browser settings. We may use analytics cookies to monitor website performance and usage trends.</p>
+
+    <h2>5. User Rights</h2>
+    <p>You have the right to:</p>
+    <ul>
+        <li>Access your personal data</li>
+        <li>Correct inaccuracies in your personal data</li>
+        <li>Request deletion of your personal data</li>
+        <li>Unsubscribe from marketing emails at any time</li>
+    </ul>
+
+    <h2>6. Children</h2>
+    <p>Our website is suitable for all ages. Children may use the website under supervision.</p>
+
+    <h2>7. Data Security</h2>
+    <p>Users are responsible for maintaining the security of their account credentials. We implement appropriate security measures to protect your personal information, but cannot guarantee complete security.</p>
+
+    <h2>8. Legal Compliance</h2>
+    <p>We comply with all Australian laws, including privacy regulations. Any legal requests for user data will be handled according to applicable laws.</p>
+
+    <h2>9. Updates to Privacy Policy</h2>
+    <p>We may update this Privacy Policy from time to time. Changes will be communicated via email, and continued use of the website indicates acceptance of updated policies.</p>
+
+    <div style="text-align:center; margin-top:30px;">
+        <a href="{% url 'dashboard' %}" style="text-decoration:none; background-color:#4F46E5; color:white; padding:12px 24px; border-radius:6px; font-weight:bold; transition:all 0.2s ease;" 
+           onmouseover="this.style.backgroundColor='#4338CA'; this.style.transform='scale(1.05)';" 
+           onmouseout="this.style.backgroundColor='#4F46E5'; this.style.transform='scale(1)';">
+            Back to Dashboard
+        </a>
+    </div>
+
+</div>
 {% endblock %}

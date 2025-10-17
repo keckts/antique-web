@@ -33,10 +33,10 @@ def blog_form(request, pk=None):
     return render(request, 'service/blog/blog_form.html', {'form': form})
 
 def about_us(request):
-    return render(request, 'service/about_us.html')
+    return render(request, 'service/general/about_us.html')
 
 def terms_and_conditions(request):
-    return render(request, 'service/terms_and_conditions.html')
+    return render(request, 'service/general/terms_and_conditions.html')
 
 def privacy_policy(request):
-    return render(request, 'service/privacy_policy.html')
+    return render(request, 'service/general/privacy_policy.html')

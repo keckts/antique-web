@@ -1,5 +1,66 @@
 {% extends 'dashboard/base.html' %}
 
 {% block content %}
-<h1>Terms and Conditions</h1>
+<div class="terms-wrapper" style="max-width:900px; margin:auto; padding:20px; font-family:Arial, sans-serif; line-height:1.6; color:#333;">
+    
+    <h1 style="text-align:center; margin-bottom:20px;">Terms and Conditions</h1>
+    <p style="text-align:center; font-size:14px; color:#666;">Effective Date: 17/10/2025</p>
+
+    <h2>1. Website Information</h2>
+    <p>Website: <strong>Kim's Antiques</strong><br>
+    Address: 132 Drummond St, Oakleigh, 3166, Melbourne, VIC, Australia<br>
+    Email: <a href="mailto:kimsantiques@gmail.com">kimsantiques@gmail.com</a><br>
+    Phone: <a href="tel:0418456646">0418 456 646</a></p>
+
+    <h2>2. Eligibility</h2>
+    <p>Our website is available to all ages. By using our website, you agree to these Terms and Conditions.</p>
+
+    <h2>3. Use of Website & Intellectual Property</h2>
+    <p>All blogs and content are protected by copyright. Users may not copy or reproduce content without permission.  
+    All intellectual property, including text, images, logos, and designs, is owned by Kim's Antiques or our licensors.</p>
+
+    <h2>4. Pricing & Subscriptions</h2>
+    <ul>
+        <li>Free Plan: $0</li>
+        <li>Premium Plan: $12/month or $115.20/year</li>
+        <li>Pro Plan: $25/month or $240/year</li>
+    </ul>
+    <p>Billing is handled securely by Stripe. Refunds are not available. Subscriptions automatically renew, and switching between plans is not allowed. A 14-day free trial is available for new users, limited to one per account. After the trial, the subscription is automatically billed.</p>
+
+    <h2>5. Antiques for Sale</h2>
+    <p>All antiques are accurately described, and images reflect the actual products. No returns or refunds are available for purchased antiques.</p>
+
+    <h2>6. Account Responsibility</h2>
+    <p>Users are responsible for all activity on their accounts. Keep your login credentials secure and notify us immediately if your account is compromised.</p>
+
+    <h2>7. Limitation of Liability & Warranties</h2>
+    <p>Kim's Antiques makes no warranties regarding the website or products, and we are not liable for any damages arising from the use of the website.</p>
+
+    <h2>8. Governing Law</h2>
+    <p>These Terms are governed by the laws of Victoria, Australia. Any disputes will be subject to Victorian courts.</p>
+
+    <h2>9. Data Collection & Privacy</h2>
+    <p>We collect the following data: name, email, address, payment info, and browsing behaviour. Methods include forms, cookies, analytics, and payment gateways (Stripe).</p>
+    <p>Data is used to process payments, deliver products/services, improve the website, and send newsletters. We share data with Stripe and Google Ads. Cookies may be used to enhance user experience and track usage.</p>
+
+    <h2>10. User Rights</h2>
+    <ul>
+        <li>Access, correction, or deletion of personal data.</li>
+        <li>Unsubscribe from marketing emails.</li>
+        <li>Children are allowed to use the site.</li>
+    </ul>
+    <p>Policy updates are notified via email. We comply with Australian legal requirements.</p>
+
+    <h2>11. Changes to Terms</h2>
+    <p>We may update these Terms and Conditions at any time. Continued use of the website indicates acceptance of changes.</p>
+
+    <div style="text-align:center; margin-top:30px;">
+        <a href="{% url 'index' %}" style="text-decoration:none; background-color:#4F46E5; color:white; padding:12px 24px; border-radius:6px; font-weight:bold; transition:all 0.2s ease;" 
+           onmouseover="this.style.backgroundColor='#4338CA'; this.style.transform='scale(1.05)';" 
+           onmouseout="this.style.backgroundColor='#4F46E5'; this.style.transform='scale(1)';">
+            Back to Start Page
+        </a>
+    </div>
+
+</div>
 {% endblock %}

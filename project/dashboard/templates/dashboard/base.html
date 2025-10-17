@@ -47,6 +47,11 @@
                         </a>
                     </li>
                     <li>
+                        <a href="{% url 'payments:orders' %}" class="{% if request.resolver_match.url_name == 'orders' %}active{% endif %}">
+                            Orders
+                        </a>
+                    </li>
+                    <li>
                         <a href="{% url 'service:blogs' %}" class="{% if request.resolver_match.url_name == 'blogs' %}active{% endif %}">
                             Blog
                         </a>
@@ -60,7 +65,7 @@
                     {% endif %}
                     <li>
                         <a href="{% url 'accounts:settings' %}" class="{% if request.resolver_match.url_name == 'settings' %}active{% endif %}">
-                            Account Settings
+                           Settings
                         </a>
                     </li>
                     <li>

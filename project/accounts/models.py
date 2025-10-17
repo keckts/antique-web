@@ -59,3 +59,21 @@ class Seller(models.Model):
     
     def __str__(self):
         return f"{self.store_name} - {self.user.email}"
+
+class EmailVerification(models.Model):
+    user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, related_name='email_verifications')
+    code = models.CharField(max_length=6)
+    created_at = models.DateTimeField(default=timezone.now)
+    verified = models.BooleanField(default=False)
+    
+    class Meta:
+        ordering = ['-created_at']
+    
+    def __str__(self):
+        return f"{self.user.email} - {self.code} - {'Verified' if self.verified else 'Pending'}"
+    
+    def is_expired(self):
+        """Check if verification code has expired (30 minutes)"""
+        from datetime import timedelta
+        expiry_time = self.created_at + timedelta(minutes=30)
+        return timezone.now() > expiry_time
