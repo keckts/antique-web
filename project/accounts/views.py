@@ -8,6 +8,7 @@ from django.http import JsonResponse
 from django.contrib.auth import logout
 from .forms import LoginForm, SellerForm, SettingsForm, SignUpForm
 import json
+from service.models import Subscriber
 
 
 User = get_user_model()
@@ -56,7 +57,12 @@ def logout_view(request):
 
 def settings(request):
     settings_form = SettingsForm(instance=request.user)
-    return render(request, 'accounts/settings/settings.html', {'form': settings_form})
+    is_email_subscribed = Subscriber.objects.filter(email=request.user.email).exists()
+
+    return render(request, 'accounts/settings/settings.html', 
+                  {'form': settings_form, 
+                   'is_email_subscribed': is_email_subscribed
+                   })
 
 def seller_form(request):
     if request.method == "POST":
@@ -225,3 +231,116 @@ def verify_password(request):
             'valid': False,
             'message': f'Error: {str(e)}'
         }, status=500)
+
+# Password Reset Views
+@require_POST
+def request_password_reset(request):
+    """Handle password reset request via AJAX"""
+    try:
+        email = request.POST.get('email', '').strip().lower()
+        
+        if not email:
+            return JsonResponse({
+                'success': False,
+                'message': 'Please enter your email address.'
+            })
+        
+        # Check if user exists
+        try:
+            user = User.objects.get(email=email)
+        except User.DoesNotExist:
+            # Return success even if user doesn't exist for security
+            return JsonResponse({
+                'success': True,
+                'message': 'If an account with this email exists, a password reset link will be sent.'
+            })
+        
+        # Check rate limiting (60 seconds)
+        from datetime import timedelta
+        from .models import PasswordReset
+        
+        recent_request = PasswordReset.objects.filter(
+            user=user,
+            created_at__gte=timezone.now() - timedelta(seconds=60)
+        ).first()
+        
+        if recent_request:
+            time_left = 60 - (timezone.now() - recent_request.created_at).seconds
+            return JsonResponse({
+                'success': False,
+                'message': f'Please wait {time_left} seconds before requesting another reset.'
+            })
+        
+        # Generate reset token
+        import secrets
+        token = secrets.token_urlsafe(32)
+        
+        # Create password reset record
+        PasswordReset.objects.create(
+            user=user,
+            token=token
+        )
+        
+        # For testing: print to console
+        reset_url = f"http://localhost:8000/accounts/reset-password/{token}/"
+        print(f"Password reset link for {user.email}: {reset_url}")
+        
+        # TODO: Send email with reset link
+        # send_password_reset_email(user, reset_url)
+        
+        return JsonResponse({
+            'success': True,
+            'message': 'Password reset link sent! Check your email and console.'
+        })
+        
+    except Exception as e:
+        return JsonResponse({
+            'success': False,
+            'message': f'Error: {str(e)}'
+        }, status=500)
+
+def reset_password_page(request, token):
+    """Display password reset page"""
+    from .models import PasswordReset
+    
+    try:
+        reset_request = PasswordReset.objects.get(token=token)
+        
+        if not reset_request.is_valid():
+            return render(request, 'accounts/password_reset_invalid.html', {
+                'message': 'This password reset link has expired or been used.'
+            })
+        
+        if request.method == 'POST':
+            new_password = request.POST.get('new_password', '')
+            confirm_password = request.POST.get('confirm_password', '')
+            
+            if not new_password or len(new_password) < 8:
+                return render(request, 'accounts/password_reset_form.html', {
+                    'token': token,
+                    'error': 'Password must be at least 8 characters long.'
+                })
+            
+            if new_password != confirm_password:
+                return render(request, 'accounts/password_reset_form.html', {
+                    'token': token,
+                    'error': 'Passwords do not match.'
+                })
+            
+            # Reset password
+            user = reset_request.user
+            user.set_password(new_password)
+            user.save()
+            
+            # Mark token as used
+            reset_request.used = True
+            reset_request.save()
+            
+            return render(request, 'accounts/password_reset_success.html')
+        
+        return render(request, 'accounts/password_reset_form.html', {'token': token})
+        
+    except PasswordReset.DoesNotExist:
+        return render(request, 'accounts/password_reset_invalid.html', {
+            'message': 'Invalid password reset link.'
+        })

@@ -1,10 +1,10 @@
-{% extends 'dashboard/base.html' %}
-{% load static %}
-
-{% block content %}
+{% extends 'dashboard/base.html' %} {% load static %} {% block content %}
 
 <head>
-  <link rel="stylesheet" href="{% static 'css/antiques/antique_detail.css' %}">
+  <link
+    rel="stylesheet"
+    href="{% static 'css/antiques/antique_detail.css' %}"
+  />
 </head>
 
 <div class="antique-detail-container">
@@ -20,41 +20,50 @@
     <div class="image-section">
       <div class="image-gallery">
         {% if antique.images.exists %}
-          <div class="main-image-wrapper">
-            <img id="mainCarouselImage"
-                 src="{{ antique.images.first.image.url }}"
-                 alt="{{ antique.title }}"
-                 class="main-image">
-            
-            {% if antique.images.count > 1 %}
-              <button class="gallery-nav prev" id="prevBtn">
-                <i class="fa-solid fa-chevron-left"></i>
-              </button>
-              <button class="gallery-nav next" id="nextBtn">
-                <i class="fa-solid fa-chevron-right"></i>
-              </button>
-              
-              <div class="image-counter">
-                <span id="currentIndex">1</span> / {{ antique.images.count }}
-              </div>
-            {% endif %}
-          </div>
+        <div class="main-image-wrapper">
+          <img
+            id="mainCarouselImage"
+            src="{{ antique.images.first.image.url }}"
+            alt="{{ antique.title }}"
+            class="main-image"
+          />
 
           {% if antique.images.count > 1 %}
-            <div class="thumbnail-grid">
-              {% for img in antique.images.all %}
-                <div class="thumbnail-wrapper {% if forloop.first %}active{% endif %}" data-index="{{ forloop.counter0 }}">
-                  <img src="{{ img.image.url }}" alt="Thumbnail {{ forloop.counter }}">
-                </div>
-              {% endfor %}
-            </div>
-          {% endif %}
-        {% else %}
-          <div class="main-image-wrapper">
-            <img src="{% static 'images/placeholder.png' %}"
-                 alt="No Image Available"
-                 class="main-image">
+          <button class="gallery-nav prev" id="prevBtn">
+            <i class="fa-solid fa-chevron-left"></i>
+          </button>
+          <button class="gallery-nav next" id="nextBtn">
+            <i class="fa-solid fa-chevron-right"></i>
+          </button>
+
+          <div class="image-counter">
+            <span id="currentIndex">1</span> / {{ antique.images.count }}
           </div>
+          {% endif %}
+        </div>
+
+        {% if antique.images.count > 1 %}
+        <div class="thumbnail-grid">
+          {% for img in antique.images.all %}
+          <div
+            class="thumbnail-wrapper {% if forloop.first %}active{% endif %}"
+            data-index="{{ forloop.counter0 }}"
+          >
+            <img
+              src="{{ img.image.url }}"
+              alt="Thumbnail {{ forloop.counter }}"
+            />
+          </div>
+          {% endfor %}
+        </div>
+        {% endif %} {% else %}
+        <div class="main-image-wrapper">
+          <img
+            src="{% static 'images/placeholder.png' %}"
+            alt="No Image Available"
+            class="main-image"
+          />
+        </div>
         {% endif %}
       </div>
     </div>
@@ -62,62 +71,61 @@
     <!-- Right Side - Details -->
     <div class="details-section">
       <div class="details-content">
-        <!-- Header with Title and Wishlist -->
+        <!-- Header -->
         <div class="detail-header">
-          <div>
-            <div style="display: flex; align-items: center; gap: 10px;">
+          <div style="display: flex; align-items: center; gap: 10px">
             {% if antique.quantity > 1 %}
-                <h1 class="detail-title">{{ antique.title }} - {{ antique.quantity }} Available</h1>
+            <h1 class="detail-title">
+              {{ antique.title }} - {{ antique.quantity }} Available
+            </h1>
             {% else %}
-                <h1 class="detail-title">{{ antique.title }}</h1>
+            <h1 class="detail-title">{{ antique.title }}</h1>
+            {% endif %} {% if user.is_authenticated %}
+            <button
+              class="wishlist-btn"
+              data-antique-id="{{ antique.id }}"
+              title="Add to Wishlist"
+            >
+              <i class="fa-regular fa-heart"></i>
+            </button>
             {% endif %}
-
-            {% if user.is_authenticated %}
-              <button class="wishlist-btn" data-antique-id="{{ antique.id }}" title="Add to Wishlist">
-                <i class="fa-regular fa-heart"></i>
-              </button>
-           {% endif %}
-            </div>
-            
-            <div class="detail-meta">
-              <span class="antique-type">
-                <i class="fa-solid fa-tag"></i> {{ antique.type_of_antique }}
-              </span>
-              <span class="listing-date">
-                <i class="fa-regular fa-calendar"></i> Listed {{ antique.created_at|date:"M j, Y" }}
-              </span>
-            </div>
           </div>
-          
-          
+
+          <div class="detail-meta">
+            <span class="antique-type">
+              <i class="fa-solid fa-tag"></i> {{ antique.type_of_antique }}
+            </span>
+            <span class="listing-date">
+              <i class="fa-regular fa-calendar"></i>
+              Listed {{ antique.created_at|date:"M j, Y" }}
+            </span>
+          </div>
         </div>
 
-          <!-- Price, Status,-->
-            <div class="price-status-section">
-              <div class="price-left">
-                <div class="price-tag">${{ antique.price }}</div>
-                {% if antique.is_sold %}
-                  <span class="status-badge sold">
-                    <i class="fa-solid fa-circle-xmark"></i> Sold
-                  </span>
-                {% else %}
-                  <span class="status-badge available">
-                    <i class="fa-solid fa-circle-check"></i> Available
-                  </span>
-                {% endif %}
-              </div>
-
-
-            </div>
+        <!-- Price and Status -->
+        <div class="price-status-section">
+          <div class="price-left">
+            <div class="price-tag">${{ antique.price }}</div>
+            {% if antique.is_sold or antique.quantity == 0 %}
+            <span class="status-badge sold">
+              <i class="fa-solid fa-circle-xmark"></i> Sold
+            </span>
+            {% else %}
+            <span class="status-badge available">
+              <i class="fa-solid fa-circle-check"></i> Available
+            </span>
+            {% endif %}
+          </div>
+        </div>
 
         <!-- Description -->
         {% if antique.description %}
-          <div class="detail-section">
-            <h3 class="section-title">Description</h3>
-            <div class="section-content">
-              {{ antique.description|linebreaks }}
-            </div>
+        <div class="detail-section">
+          <h3 class="section-title">Description</h3>
+          <div class="section-content">
+            {{ antique.description|linebreaks }}
           </div>
+        </div>
         {% endif %}
 
         <!-- Additional Details -->
@@ -125,14 +133,14 @@
           <h3 class="section-title">Details</h3>
           <div class="details-grid">
             {% if antique.dimensions %}
-              <div class="detail-item">
-                <span class="detail-label">
-                  <i class="fa-solid fa-ruler-combined"></i> Dimensions
-                </span>
-                <span class="detail-value">{{ antique.dimensions }}</span>
-              </div>
+            <div class="detail-item">
+              <span class="detail-label">
+                <i class="fa-solid fa-ruler-combined"></i> Dimensions
+              </span>
+              <span class="detail-value">{{ antique.dimensions }}</span>
+            </div>
             {% endif %}
-            
+
             <div class="detail-item">
               <span class="detail-label">
                 <i class="fa-solid fa-box"></i> Quantity
@@ -141,174 +149,190 @@
             </div>
 
             {% if antique.additional_info %}
-              <div class="detail-item full-width">
-                <span class="detail-label">
-                  <i class="fa-solid fa-circle-info"></i> Additional Information
-                </span>
-                <span class="detail-value">{{ antique.additional_info }}</span>
-              </div>
+            <div class="detail-item full-width">
+              <span class="detail-label">
+                <i class="fa-solid fa-circle-info"></i> Additional Information
+              </span>
+              <span class="detail-value">{{ antique.additional_info }}</span>
+            </div>
             {% endif %}
           </div>
         </div>
 
-        <!-- Seller Information -->
-        {% if seller %}
-          <div class="detail-section">
-            <h3 class="section-title">Seller Information</h3>
-            <div class="seller-info">
-              <div class="seller-name">
-                <i class="fa-solid fa-store"></i> {{ seller.store_name }}
-                {% if seller.is_verified %}
-                  <span class="verified-badge" title="Verified Seller">
-                    <i class="fa-solid fa-check-circle"></i>
-                  </span>
+        <!-- Seller Card -->
+        {% if antique.seller %}
+        <div class="detail-section seller-section">
+          <h3 class="section-title">
+            <i class="fa-solid fa-user"></i> Seller Information
+          </h3>
+
+          <div class="seller-card">
+            <div class="seller-header">
+              <h4 class="seller-name">
+                {{antique.seller.store_name|default:antique.owner.get_full_name|default:antique.owner.username}}
+                {% if antique.seller.is_verified %}
+                <span class="verified-badge" title="Verified Seller">
+                  <i class="fa-solid fa-check-circle"></i>
+                </span>
                 {% endif %}
-              </div>
-              {% if seller.description %}
-                <div class="seller-description">{{ seller.description|linebreaks }}</div>
-              {% endif %}
-              <div class="seller-contact">
-                {% if seller.email %}
-                  <div>
-                    <i class="fa-solid fa-envelope"></i>
-                    <a href="mailto:{{ seller.email }}">{{ seller.email }}</a>
-                  </div>
-                {% endif %}
-                {% if seller.phone_number %}
-                  <div>
-                    <i class="fa-solid fa-phone"></i> {{ seller.phone_number }}
-                  </div>
-                {% endif %}
-                {% if seller.facebook %}
-                  <div>
-                    <i class="fa-brands fa-facebook"></i>
-                    <a href="{{ seller.facebook }}" target="_blank">Facebook Profile</a>
-                  </div>
-                {% endif %}
-              </div>
-              {% if seller.notes %}
-                <div class="seller-notes">
-                  <strong>Notes:</strong> {{ seller.notes|linebreaks }}
-                </div>
+              </h4>
+              {% if antique.seller.description %}
+              <p class="seller-description">{{ antique.seller.description }}</p>
               {% endif %}
             </div>
+
+            <div class="seller-contact">
+              {% if antique.owner.email %}
+              <a href="mailto:{{ antique.owner.email }}" class="contact-link">
+                <i class="fa-regular fa-envelope"></i> {{ antique.owner.email }}
+              </a>
+              {% endif %} {% if antique.seller.phone_number %}
+              <span class="contact-link">
+                <i class="fa-solid fa-phone"></i>
+                {{ antique.seller.phone_number }}
+              </span>
+              {% endif %} {% if antique.seller.address %}
+              <span class="contact-link">
+                <i class="fa-solid fa-location-dot"></i>
+                {{antique.seller.address }}
+              </span>
+              {% endif %}
+            </div>
+
+            <div class="seller-socials">
+              {% if antique.seller.facebook %}
+              <a href="{{ antique.seller.facebook }}" target="_blank"
+                ><i class="fab fa-facebook"></i
+              ></a>
+              {% endif %} {% if antique.seller.instagram %}
+              <a href="{{ antique.seller.instagram }}" target="_blank"
+                ><i class="fab fa-instagram"></i
+              ></a>
+              {% endif %} {% if antique.seller.twitter %}
+              <a href="{{ antique.seller.twitter }}" target="_blank"
+                ><i class="fab fa-twitter"></i
+              ></a>
+              {% endif %} {% if antique.seller.website %}
+              <a href="{{ antique.seller.website }}" target="_blank"
+                ><i class="fa-solid fa-globe"></i
+              ></a>
+              {% endif %}
+            </div>
+
+            {% if antique.seller.notes %}
+            <p class="seller-notes">
+              <strong>Notes:</strong> {{ antique.seller.notes }}
+            </p>
+            {% endif %} {% if request.user.is_superuser %}
+            <a
+              href="{% url 'antiques:edit_antique' antique.slug %}"
+              class="admin-edit-link"
+            >
+              <i class="fa-solid fa-pen-to-square"></i> Edit Antique
+            </a>
+
+            <form
+              method="POST"
+              action="{% url 'antiques:delete_antique' antique.slug %}"
+              style="display: inline"
+              onsubmit="return confirm('Are you sure you want to delete this antique? This will also archive the Stripe product.');"
+            >
+              {% csrf_token %}
+              <button
+                type="submit"
+                class="admin-delete-link"
+                id="deleteAntiqueBtn"
+                style="
+                  border: none;
+                  background: none;
+                  cursor: pointer;
+                  padding: 0;
+                "
+              >
+                <i class="fa-solid fa-trash"></i> Delete Antique
+              </button>
+            </form>
+            {% endif %}
           </div>
-        {% endif %}<!-- Seller Information -->
-{% if antique.seller %}
-  <div class="detail-section seller-section">
-    <h3 class="section-title">
-      <i class="fa-solid fa-user"></i> Seller Information
-    </h3>
+        </div>
+        {% endif %}
 
-    <div class="seller-card">
-
-      <!-- Seller Header -->
-      <div class="seller-header">
-        <h4 class="seller-name">
-          {{ antique.seller.store_name|default:antique.owner.get_full_name|default:antique.owner.username }}
-          {% if antique.seller.is_verified %}
-            <span class="verified-badge" title="Verified Seller">
-              <i class="fa-solid fa-badge-check"></i>
-            </span>
-          {% endif %}
-        </h4>
-        {% if antique.seller.description %}
-          <p class="seller-description">{{ antique.seller.description }}</p>
-        {% endif %}
-      </div>
-
-      <!-- Contact Info -->
-      <div class="seller-contact">
-        {% if antique.owner.email %}
-          <a href="mailto:{{ antique.owner.email }}" class="contact-link">
-            <i class="fa-regular fa-envelope"></i> {{ antique.owner.email }}
-          </a>
-        {% endif %}
-        {% if antique.seller.phone_number %}
-          <span class="contact-link">
-            <i class="fa-solid fa-phone"></i> {{ antique.seller.phone_number }}
-          </span>
-        {% endif %}
-        {% if antique.seller.address %}
-          <span class="contact-link">
-            <i class="fa-solid fa-location-dot"></i> {{ antique.seller.address }}
-          </span>
-        {% endif %}
-      </div>
-
-      <!-- Social Media Links -->
-      <div class="seller-socials">
-        {% if antique.seller.facebook %}
-          <a href="{{ antique.seller.facebook }}" target="_blank"><i class="fab fa-facebook"></i></a>
-        {% endif %}
-        {% if antique.seller.instagram %}
-          <a href="{{ antique.seller.instagram }}" target="_blank"><i class="fab fa-instagram"></i></a>
-        {% endif %}
-        {% if antique.seller.twitter %}
-          <a href="{{ antique.seller.twitter }}" target="_blank"><i class="fab fa-twitter"></i></a>
-        {% endif %}
-        {% if antique.seller.website %}
-          <a href="{{ antique.seller.website }}" target="_blank"><i class="fa-solid fa-globe"></i></a>
-        {% endif %}
-      </div>
-
-      {% if antique.seller.notes %}
-        <p class="seller-notes"><strong>Notes:</strong> {{ antique.seller.notes }}</p>
-      {% endif %}
-
-    </div>
-  </div>
-
-  <!-- Action Buttons -->
-  {% if not antique.is_sold %}
-    <div class="action-buttons">
-      {% if antique.stripe_price_id and not antique.is_sold %}
-        <form id="checkout-form" action="{% url 'payments:create_order' antique.pk %}" method="POST">
-          {% csrf_token %}
-          <button type="submit" class="btn-primary btn-large">
-            <i class="fa-solid fa-cart-shopping"></i> Buy Now
+        <!-- Action Buttons -->
+        <div class="action-buttons">
+          {% if antique.quantity == 0 %}
+          <button
+            class="btn-secondary btn-large"
+            onclick="openModal('Sorry this item is sold out--maybe next time!', [['View Other Items', 'black', '{% url 'antiques:view_antiques' %}']])"
+          >
+            <i class="fa-solid fa-ban"></i> Sold Out
           </button>
-        </form>
-      {% endif %}
+          {% else %} {% if antique.stripe_price_id %}
+          <form
+            id="checkout-form"
+            action="{% url 'payments:create_order' antique.pk %}"
+            method="POST"
+          >
+            {% csrf_token %}
+            <button type="submit" class="btn-primary btn-large">
+              <i class="fa-solid fa-cart-shopping"></i> Buy Now
+            </button>
+          </form>
+          {% endif %} {% endif %} {% if antique.seller.email %}
+          <a
+            href="mailto:{{ antique.seller.email }}"
+            class="btn-primary btn-large"
+          >
+            <i class="fa-solid fa-message"></i> Contact Seller
+          </a>
+          {% endif %}
 
-      <a href="mailto:{{ antique.seller.email }}" class="btn-primary btn-large">
-        <i class="fa-solid fa-message"></i> Contact Seller
-      </a>
-      <button class="btn-secondary btn-large">
-        <i class="fa-solid fa-share-nodes"></i> Share
-      </button>
-    </div>
-  {% endif %}
-{% endif %}
-
+          <button class="btn-secondary btn-large">
+            <i class="fa-solid fa-share-nodes"></i> Share
+          </button>
+        </div>
       </div>
     </div>
   </div>
 </div>
 
 <!-- Wishlist Modal -->
-<div class="modal fade" id="wishlistModal" tabindex="-1" aria-labelledby="wishlistModalLabel" aria-hidden="true">
+<div
+  class="modal fade"
+  id="wishlistModal"
+  tabindex="-1"
+  aria-labelledby="wishlistModalLabel"
+  aria-hidden="true"
+>
   <div class="modal-dialog modal-dialog-centered">
     <div class="modal-content">
       <div class="modal-header">
         <h5 class="modal-title" id="wishlistModalLabel">
           <i class="fa-regular fa-heart"></i> Add to Wishlist
         </h5>
-        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        <button
+          type="button"
+          class="btn-close"
+          data-bs-dismiss="modal"
+          aria-label="Close"
+        ></button>
       </div>
       <div class="modal-body">
-        <form method="post" action="{% url 'antiques:add_to_wishlist' %}" id="wishlistForm">
+        <form
+          method="post"
+          action="{% url 'antiques:add_to_wishlist' %}"
+          id="wishlistForm"
+        >
           {% csrf_token %}
-          <input type="hidden" name="antique_id" id="modal-antique-id">
+          <input type="hidden" name="antique_id" id="modal-antique-id" />
           <div class="form-group">
             <label for="wishlistSelect" class="form-label">
               Select a wishlist to add this antique to:
             </label>
             <select id="wishlistSelect" name="wishlist_id" class="form-select">
               {% for w in wishlists %}
-                <option value="{{ w.id }}">{{ w.title }}</option>
+              <option value="{{ w.id }}">{{ w.title }}</option>
               {% empty %}
-                <option value="">No wishlist available</option>
+              <option value="">No wishlist available</option>
               {% endfor %}
             </select>
             <a href="{% url 'antiques:create_wishlist' %}" class="btn-link">

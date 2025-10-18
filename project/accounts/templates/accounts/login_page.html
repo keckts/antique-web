@@ -8,7 +8,7 @@
     
     <!-- Left: Form -->
     <div class="col-md-6 p-5">
-      <h1 class="mb-4">Kim's Antiques</h1>
+      <h1 class="mb-4">Edwards Emporium</h1>
       <h3 class="mb-4">Welcome back — sign in</h3>
 
       <form id="loginForm" method="post" novalidate>
@@ -28,7 +28,7 @@
 
         <div class="d-flex justify-content-between align-items-center mb-3">
           
-          <a href="#" class="small">Forgot password?</a>
+          <a href="#" class="small" data-bs-toggle="modal" data-bs-target="#forgotPasswordModal">Forgot password?</a>
         </div>
 
         <button type="submit" class="btn btn-dark w-100 py-2">Sign In</button>
@@ -52,6 +52,59 @@
   </div>
 </div>
 
+<!-- Forgot Password Modal -->
+<div class="modal fade" id="forgotPasswordModal" tabindex="-1" aria-labelledby="forgotPasswordModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content" style="border: 1px solid #000; background: #fff;">
+      <div class="modal-header" style="border-bottom: 1px solid #e5e5e5;">
+        <h5 class="modal-title" id="forgotPasswordModalLabel" style="font-weight: 300; color: #000; letter-spacing: 1px;">
+          <i class="fa-solid fa-key me-2"></i>
+          Reset Your Password
+        </h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body" style="padding: 30px;">
+        <p style="color: #666; font-weight: 300; margin-bottom: 20px; letter-spacing: 0.5px;">
+          Enter your email address and we'll send you a link to reset your password.
+        </p>
+        
+        <form id="forgotPasswordForm">
+          {% csrf_token %}
+          <div class="mb-3">
+            <label for="resetEmail" class="form-label" style="font-weight: 400; color: #000;">Email Address</label>
+            <input type="email" 
+                   id="resetEmail" 
+                   name="email" 
+                   class="form-control" 
+                   placeholder="Enter your email address"
+                   required
+                   style="padding: 14px 16px; border: 1px solid #000; background: #fff; color: #000;">
+          </div>
+          
+          <div id="resetMessage" class="alert" style="display: none; font-weight: 300; letter-spacing: 0.5px;"></div>
+          
+          <button type="submit" 
+                  id="resetSubmitBtn"
+                  class="btn w-100 py-2" 
+                  style="background: #000; color: #fff; border: 1px solid #000; font-weight: 400; letter-spacing: 0.5px;">
+            <span class="btn-text">Send Reset Link</span>
+            <span class="btn-loading" style="display: none;">
+              <i class="fa-solid fa-spinner fa-spin me-2"></i>Sending...
+            </span>
+          </button>
+        </form>
+        
+        <div class="text-center mt-3">
+          <small style="color: #666; font-weight: 300;">
+            Remembered your password? 
+            <a href="#" data-bs-dismiss="modal" style="color: #000; text-decoration: none;">Sign in</a>
+          </small>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
 <style>
 .form-control {
   border-radius: 8px;
@@ -60,12 +113,11 @@
   border: 1px solid #ccc;
 }
 .form-control:focus {
-  border-color: #0077cc;
-  box-shadow: 0 0 0 0.2rem rgba(0,123,255,.15);
+  border-color: #000;
+  box-shadow: 0 0 0 2px rgba(0, 0, 0, 0.1);
 }
 .btn-dark {
   background: #000;
-  border-radius: 8px;
 }
 .btn-dark:hover {
   background: #333;
@@ -73,6 +125,41 @@
 .text-danger {
   font-size: 0.875rem;
   margin-top: 4px;
+}
+
+/* Modal Styles */
+.modal-content {
+  color: #000;
+}
+
+.modal-header .btn-close {
+  background: none;
+  border: none;
+  font-size: 1.2rem;
+  color: #000;
+}
+
+.modal-header .btn-close:hover {
+  color: #666;
+}
+
+.btn:hover {
+  background: #fff !important;
+  color: #000 !important;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+}
+
+.alert-success {
+  background: #fff;
+  color: #000;
+  border: 1px solid #000;
+}
+
+.alert-danger {
+  background: #000;
+  color: #fff;
+  border: 1px solid #000;
 }
 </style>
 
@@ -112,7 +199,8 @@ document.addEventListener("DOMContentLoaded", () => {
     const errorText = document.getElementById("form-errors");
     const formErrorsDiv = document.getElementById("errorsDiv");
 
-    form.addEventListener("submit", async (e) => { // <-- add async here
+    // Login form handling
+    form.addEventListener("submit", async (e) => {
       e.preventDefault();
       form.disabled = true;
 
@@ -147,6 +235,69 @@ document.addEventListener("DOMContentLoaded", () => {
         }
       }
     });
+
+    // Password reset form handling
+    const resetForm = document.getElementById("forgotPasswordForm");
+    const resetSubmitBtn = document.getElementById("resetSubmitBtn");
+    const resetMessage = document.getElementById("resetMessage");
+    const btnText = resetSubmitBtn.querySelector(".btn-text");
+    const btnLoading = resetSubmitBtn.querySelector(".btn-loading");
+    
+    let lastResetTime = 0;
+
+    resetForm.addEventListener("submit", async (e) => {
+      e.preventDefault();
+      
+      // Check rate limiting on client side
+      const now = Date.now();
+      if (now - lastResetTime < 60000) {
+        const timeLeft = Math.ceil((60000 - (now - lastResetTime)) / 1000);
+        showResetMessage(`Please wait ${timeLeft} seconds before requesting another reset.`, 'danger');
+        return;
+      }
+
+      // Show loading state
+      resetSubmitBtn.disabled = true;
+      btnText.style.display = "none";
+      btnLoading.style.display = "inline";
+      resetMessage.style.display = "none";
+
+      const formData = new FormData(resetForm);
+      
+      try {
+        const response = await fetch("{% url 'accounts:request_password_reset' %}", {
+          method: "POST",
+          body: formData,
+          headers: {
+            'X-Requested-With': 'XMLHttpRequest',
+            'X-CSRFToken': csrfToken
+          }
+        });
+
+        const data = await response.json();
+        
+        if (data.success) {
+          showResetMessage(data.message, 'success');
+          resetForm.reset();
+          lastResetTime = now;
+        } else {
+          showResetMessage(data.message, 'danger');
+        }
+      } catch (error) {
+        showResetMessage('An error occurred. Please try again.', 'danger');
+      } finally {
+        // Reset button state
+        resetSubmitBtn.disabled = false;
+        btnText.style.display = "inline";
+        btnLoading.style.display = "none";
+      }
+    });
+
+    function showResetMessage(message, type) {
+      resetMessage.textContent = message;
+      resetMessage.className = `alert alert-${type}`;
+      resetMessage.style.display = "block";
+    }
 });
 </script>
 

@@ -8,6 +8,10 @@ from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 from django.views.decorators.http import require_POST
 from project.generic_functions import _generic_form_view, _generic_delete, random_text
+from django.conf import settings
+import stripe
+
+stripe.api_key = settings.STRIPE_SECRET_KEY
 
 def get_wishlists(user):
     if user.is_authenticated:
@@ -15,25 +19,64 @@ def get_wishlists(user):
     return []
 
 def view_antiques(request):
-    antiques = Antique.objects.filter(is_sold=False).order_by('-created_at')
-    # Get unique antique types for the filter dropdown
-    antique_types = Antique.objects.filter(is_sold=False).values_list('type_of_antique', flat=True).distinct().order_by('type_of_antique')
-    
+    show_sold = request.GET.get('show_sold') == 'true'
+
+    if show_sold:
+        # Show only sold (quantity = 0)
+        antiques = Antique.objects.filter(quantity=0).order_by('-created_at')
+    else:
+        # Show only available (quantity > 0, or is_sold=False)
+        antiques = Antique.objects.filter(quantity__gt=0, is_sold=False).order_by('-created_at')
+
+    # Make the antique types dropdown reflect whatever the user is seeing
+    antique_types = (
+        antiques.values_list('type_of_antique', flat=True)
+        .distinct()
+        .order_by('type_of_antique')
+    )
+
     return render(request, 'antiques/view/view_antiques.html', {
         'antiques': antiques,
         'wishlists': get_wishlists(request.user),
-        'antique_types': antique_types
+        'antique_types': antique_types,
+        'show_sold': show_sold,  # useful for the checkbox in your template
     })
+
     
 def antique_detail(request, short_id, slug):
     antique = get_object_or_404(Antique, short_id=short_id, slug=slug)
     return render(request, 'antiques/view/antique_detail.html', {'antique': antique, 'wishlists': get_wishlists(request.user)})
 
-@login_required
 @require_POST
-def antique_delete(request, slug):
+def antique_delete(request, slug): # Note: this function only archives the Stripe product/price instead of deleting them
     antique = get_object_or_404(Antique, slug=slug, owner=request.user)
     title = antique.title  # store before deleting
+    
+    # Delete Stripe product and price if they exist
+    if antique.stripe_product_id:
+        try:
+            # Archive the price first (prices can't be deleted, only archived)
+            if antique.stripe_price_id:
+                try:
+                    stripe.Price.modify(
+                        antique.stripe_price_id,
+                        active=False
+                    )
+                    print(f"DEBUG: Archived Stripe price {antique.stripe_price_id}")
+                except stripe.error.StripeError as e:
+                    print(f"WARNING: Failed to archive Stripe price: {e}")
+            
+            # Archive the product (products can't be deleted, only archived)
+            stripe.Product.modify(
+                antique.stripe_product_id,
+                active=False
+            )
+            print(f"DEBUG: Archived Stripe product {antique.stripe_product_id}")
+        except stripe.error.StripeError as e:
+            # Log the error but continue with deletion
+            print(f"WARNING: Failed to archive Stripe product: {e}")
+            messages.warning(request, f'"{title}" was deleted, but there was an issue with Stripe. Please check manually.')
+    
     antique.delete()
     messages.success(request, f'"{title}" was successfully deleted.')
     return redirect('antiques:view_antiques') 

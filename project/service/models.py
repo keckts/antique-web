@@ -1,6 +1,7 @@
 from django.db import models
 from django.conf import settings
 from django.utils.text import slugify
+from django.utils import timezone
 
 STATUS_CHOICES = (
     ('draft', 'Draft'),
@@ -37,3 +38,37 @@ class BlogPost(models.Model):
         word_count = len(self.content.split())
         reading_time_minutes = max(1, word_count // 200) # Assuming average reading speed of 200 wpm
         return reading_time_minutes
+
+class Subscriber(models.Model):
+    """Model for storing email subscribers"""
+    email = models.EmailField(unique=True, max_length=255)
+    subscribed_at = models.DateTimeField(default=timezone.now)
+    is_active = models.BooleanField(default=True)
+    
+    class Meta:
+        ordering = ['-subscribed_at']
+        verbose_name = 'Subscriber'
+        verbose_name_plural = 'Subscribers'
+    
+    def __str__(self):
+        return self.email
+    
+class EmailTemplate(models.Model):
+    """Model for storing email templates. Useful for drafts or to see past mass emails."""
+
+    name = models.CharField(max_length=100, blank=True, null=True)
+    subject = models.CharField(max_length=255, blank=True, null=True)
+    body = models.TextField(blank=True, null=True)  # HTML content
+    created_at = models.DateTimeField(auto_now_add=True)
+    created_by = models.ForeignKey(
+        settings.AUTH_USER_MODEL,
+        on_delete=models.SET_NULL,
+        null=True,
+        blank=True
+    )
+
+    class Meta:
+        verbose_name = 'Email Template'
+        verbose_name_plural = 'Email Templates'
+    
+    

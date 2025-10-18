@@ -1,150 +1,228 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
+  <head>
     {% load static %}
-    
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>{% block title %}Kim's Antiques{% endblock %}</title>
+
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>{% block title %}Edwards Emporium{% endblock %}</title>
 
     <!-- CSS -->
-    <link rel="stylesheet" href="{% static 'css/style.css' %}">
-    <link rel="stylesheet" href="{% static 'css/components/navbar.css' %}">
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css">
-    <script src="https://kit.fontawesome.com/64b900288d.js" crossorigin="anonymous"></script>
-    <link rel="stylesheet" href="{% static 'css/antiques/view_antiques.css' %}">
-    <link rel="stylesheet" href="{% static 'css/index.css' %}">
+    <link rel="stylesheet" href="{% static 'css/style.css' %}" />
+    <link rel="stylesheet" href="{% static 'css/components/navbar.css' %}" />
+    <link
+      href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css"
+      rel="stylesheet"
+    />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css"
+    />
+    <link
+      rel="stylesheet"
+      href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css"
+    />
+    <script
+      src="https://kit.fontawesome.com/64b900288d.js"
+      crossorigin="anonymous"
+    ></script>
+    <link
+      rel="stylesheet"
+      href="{% static 'css/antiques/view_antiques.css' %}"
+    />
+    <link rel="stylesheet" href="{% static 'css/index.css' %}" />
 
     {% block extra_head %}{% endblock %}
-</head>
-<body>
+  </head>
+
+  <style>
+    /* Make dropdown look clean */
+
+</style>
+  <body>
     <div class="wrapper d-flex min-vh-100">
+      {% include 'dashboard/main/modal.html' %}
+      <!-- Top Navbar -->
+      <header class="dashboard-header">
+        <div class="dashboard-container">
+          <nav class="dashboard-nav">
+            <a href="{% url 'dashboard' %}" class="dashboard-logo"
+              >Edwards Emporium</a
+            >
 
-
-<!-- Top Navbar -->
-<header class="dashboard-header">
-    <div class="dashboard-container">
-        <nav class="dashboard-nav">
-            <a href="{% url 'dashboard' %}" class="dashboard-logo">Kim's Antiques</a>
-            
             <ul class="dashboard-nav-links">
-                {% if request.user.is_authenticated %}
-                    <li>
-                        <a href="{% url 'dashboard' %}" class="{% if request.resolver_match.url_name == 'dashboard' %}active{% endif %}">
-                            Dashboard
-                        </a>
-                    </li>
-                    <li>
-                        <a href="{% url 'antiques:view_antiques' %}" class="{% if request.resolver_match.url_name == 'view_antiques' %}active{% endif %}">
-                            View Antiques
-                        </a>
-                    </li>
-                    <li>
-                        <a href="{% url 'antiques:wishlists' %}" class="{% if request.resolver_match.url_name == 'wishlists' %}active{% endif %}">
-                            Your Wishlists
-                        </a>
-                    </li>
-                    <li>
-                        <a href="{% url 'payments:orders' %}" class="{% if request.resolver_match.url_name == 'orders' %}active{% endif %}">
-                            Orders
-                        </a>
-                    </li>
-                    <li>
-                        <a href="{% url 'service:blogs' %}" class="{% if request.resolver_match.url_name == 'blogs' %}active{% endif %}">
-                            Blog
-                        </a>
-                    </li>
-                    {% if request.user.is_superuser %}
-                        <li>
-                            <a href="{% url 'antiques:create_antique' %}" class="{% if request.resolver_match.url_name == 'create_antique' %}active{% endif %}">
-                                Create New Antique
-                            </a>
-                        </li>
-                    {% endif %}
-                    <li>
-                        <a href="{% url 'accounts:settings' %}" class="{% if request.resolver_match.url_name == 'settings' %}active{% endif %}">
-                           Settings
-                        </a>
-                    </li>
-                    <li>
-                        <a href="{% url 'accounts:logout_view' %}" class="logout-link">
-                            Logout
-                        </a>
-                    </li>
-                {% else %}
-                    <li>
-                        <a href="{% url 'antiques:view_antiques' %}" class="{% if request.resolver_match.url_name == 'view_antiques' %}active{% endif %}">
-                            View Antiques
-                        </a>
-                    </li>
-                    <li>
-                        <a href="{% url 'service:blogs' %}" class="{% if request.resolver_match.url_name == 'blogs' %}active{% endif %}">
-                            Blog
-                        </a>
-                    </li>
-                    <li>
-                        <a href="{% url 'accounts:login_view' %}" class="{% if request.resolver_match.url_name == 'login' %}active{% endif %}">
-                            Login
-                        </a>
-                    </li>
-                    <li>
-                        <a href="{% url 'accounts:signup_view' %}">
-                            <strong>Sign Up</strong>
-                        </a>
-                    </li>
-                {% endif %}
+              {% if request.user.is_authenticated %}
+              <li>
+                <a
+                  href="{% url 'dashboard' %}"
+                  class="{% if request.resolver_match.url_name == 'dashboard' %}active{% endif %}"
+                >
+                  Dashboard
+                </a>
+              </li>
+              <li>
+                <a
+                  href="{% url 'antiques:view_antiques' %}"
+                  class="{% if request.resolver_match.url_name == 'view_antiques' %}active{% endif %}"
+                >
+                  View Antiques
+                </a>
+              </li>
+              <li>
+                <a
+                  href="{% url 'antiques:wishlists' %}"
+                  class="{% if request.resolver_match.url_name == 'wishlists' %}active{% endif %}"
+                >
+                  Your Wishlists
+                </a>
+              </li>
+              <li>
+                <a
+                  href="{% url 'payments:orders' %}"
+                  class="{% if request.resolver_match.url_name == 'orders' %}active{% endif %}"
+                >
+                  Orders
+                </a>
+              </li>
+              <li>
+                <a
+                  href="{% url 'service:blogs' %}"
+                  class="{% if request.resolver_match.url_name == 'blogs' %}active{% endif %}"
+                >
+                  Blog
+                </a>
+              </li>
+
+              <!-- More Dropdown -->
+              <li class="dropdown">
+                <a href="#" class="dropdown-toggle">More</a>
+                <ul class="dropdown-menu">
+                  <li>
+                    <a href="{% url 'service:terms_and_conditions' %}"
+                      >Terms & Conditions</a
+                    >
+                  </li>
+                  <li><a href="{% url 'service:about_us' %}">About Us</a></li>
+                  <li>
+                    <a href="{% url 'service:privacy_policy' %}"
+                      >Privacy Policy</a
+                    >
+                  </li>
+                  <li><a href="{% url 'accounts:settings' %}">Settings</a></li>
+                </ul>
+              </li>
+
+              <li>
+                <a href="{% url 'accounts:logout_view' %}" class="logout-link"
+                  >Logout</a
+                >
+              </li>
+              {% else %}
+              <li>
+                <a
+                  href="{% url 'antiques:view_antiques' %}"
+                  class="{% if request.resolver_match.url_name == 'view_antiques' %}active{% endif %}"
+                >
+                  View Antiques
+                </a>
+              </li>
+              <li>
+                <a
+                  href="{% url 'service:blogs' %}"
+                  class="{% if request.resolver_match.url_name == 'blogs' %}active{% endif %}"
+                >
+                  Blog
+                </a>
+              </li>
+              <li>
+                <a
+                  href="{% url 'accounts:login_view' %}"
+                  class="{% if request.resolver_match.url_name == 'login' %}active{% endif %}"
+                >
+                  Login
+                </a>
+              </li>
+              <li>
+                <a href="{% url 'accounts:signup_view' %}"
+                  ><strong>Sign Up</strong></a
+                >
+              </li>
+              {% endif %}
             </ul>
 
             <!-- Mobile Menu Toggle -->
             <button class="mobile-menu-toggle" aria-label="Toggle menu">
-                <span></span>
-                <span></span>
-                <span></span>
+              <span></span>
+              <span></span>
+              <span></span>
             </button>
-        </nav>
-    </div>
-</header>
+          </nav>
+        </div>
+      </header>
 
-    <script>
-        // Mobile menu toggle
-        document.addEventListener('DOMContentLoaded', function() {
-            const menuToggle = document.querySelector('.mobile-menu-toggle');
-            const navLinks = document.querySelector('.dashboard-nav-links');
-            
-            if (menuToggle) {
-                menuToggle.addEventListener('click', function() {
-                    this.classList.toggle('active');
-                    navLinks.classList.toggle('active');
-                });
-            }
-
-            // Close menu when clicking outside
-            document.addEventListener('click', function(event) {
-                const isClickInside = document.querySelector('.dashboard-nav').contains(event.target);
-                if (!isClickInside && navLinks.classList.contains('active')) {
-                    menuToggle.classList.remove('active');
-                    navLinks.classList.remove('active');
-                }
-            });
+      <!-- JS for Mobile Toggle (optional) -->
+      <script>
+        document.querySelectorAll(".dropdown-toggle").forEach((toggle) => {
+          toggle.addEventListener("click", (e) => {
+            e.preventDefault();
+            const menu = toggle.nextElementSibling;
+            menu.style.display =
+              menu.style.display === "block" ? "none" : "block";
+          });
         });
-    </script>
+      </script>
 
-        <!-- Main content -->
-        <main class="content flex-grow-1">
-            {% block content %}{% endblock %}
-        </main>
+      <script>
+        // Mobile menu toggle
+        document.addEventListener("DOMContentLoaded", function () {
+          const menuToggle = document.querySelector(".mobile-menu-toggle");
+          const navLinks = document.querySelector(".dashboard-nav-links");
+
+          if (menuToggle) {
+            menuToggle.addEventListener("click", function () {
+              this.classList.toggle("active");
+              navLinks.classList.toggle("active");
+            });
+          }
+
+          // Close menu when clicking outside
+          document.addEventListener("click", function (event) {
+            const isClickInside = document
+              .querySelector(".dashboard-nav")
+              .contains(event.target);
+            if (!isClickInside && navLinks.classList.contains("active")) {
+              menuToggle.classList.remove("active");
+              navLinks.classList.remove("active");
+            }
+          });
+        });
+      </script>
+
+      <!-- Main content -->
+      <main class="content flex-grow-1">{% block content %}{% endblock %}</main>
     </div>
 
     <!-- Footer -->
-    {% comment %} <footer class="footer text-center py-3">
-        &copy; {{ year|default:"2025" }} Kim's Antiques
-    </footer> {% endcomment %}
+    {% comment %}
+    <footer class="footer text-center py-3">
+      &copy; {{ year|default:"2025" }} Edwards Emporium
+    </footer>
+    {% endcomment %}
 
     <!-- JS -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
     <script src="{% static 'js/main.js' %}"></script>
+    <script>
+      document.querySelectorAll(".dropdown-toggle").forEach((toggle) => {
+        toggle.addEventListener("click", (e) => {
+          e.preventDefault();
+          const menu = toggle.nextElementSibling;
+          menu.style.display =
+            menu.style.display === "block" ? "none" : "block";
+        });
+      });
+    </script>
+
     {% block extra_scripts %}{% endblock %}
-</body>
+  </body>
 </html>

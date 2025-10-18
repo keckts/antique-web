@@ -1,5 +1,184 @@
 {% extends 'dashboard/base.html' %}
+{% load static %}
 
 {% block content %}
-<h1>About Us</h1>
+<link rel="stylesheet" href="{% static 'css/service/about_us.css' %}">
+
+<div class="about-page">
+  <!-- Hero Section -->
+  <section class="about-hero">
+    <div class="hero-container">
+      <div class="hero-content">
+        <h1 class="hero-title">About Kim's Antiques</h1>
+        <p class="hero-subtitle">Curating timeless treasures from around the world</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- Our Story Section -->
+  <section class="story-section">
+    <div class="story-container">
+      <div class="story-grid">
+        <div class="story-content">
+          <h2 class="section-title">Our Story</h2>
+          <p class="story-text">
+            Founded in 2025 by Kim, Kim's Antiques began as a passion project born from countless hours spent wandering through flea markets and antique shops across the globe. What started as a personal fascination with historical artifacts and vintage treasures has evolved into a curated marketplace for discerning collectors and vintage enthusiasts.
+          </p>
+          <p class="story-text">
+            We believe that every antique tells a story — stories of craftsmanship, history, and the lives of those who came before us. Our mission is to preserve these narratives while connecting them with people who appreciate their beauty and significance.
+          </p>
+        </div>
+        <div class="story-image">
+          <div class="image-placeholder">
+            <i class="fa-solid fa-compass"></i>
+            <span>Exploring Markets Worldwide</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Values Section -->
+  <section class="values-section">
+    <div class="values-container">
+      <h2 class="section-title">What We Stand For</h2>
+      <div class="values-grid">
+        <div class="value-card">
+          <div class="value-icon">
+            <i class="fa-solid fa-certificate"></i>
+          </div>
+          <h3>Authenticity</h3>
+          <p>Every piece in our collection is carefully verified for authenticity. We work with trusted experts and use rigorous authentication processes to ensure you receive genuine antiques.</p>
+        </div>
+        
+        <div class="value-card">
+          <div class="value-icon">
+            <i class="fa-solid fa-heart"></i>
+          </div>
+          <h3>Passion</h3>
+          <p>Our love for antiques drives everything we do. From sourcing unique pieces to sharing their stories, we're passionate about preserving history and connecting it with modern collectors.</p>
+        </div>
+        
+        <div class="value-card">
+          <div class="value-icon">
+            <i class="fa-solid fa-handshake"></i>
+          </div>
+          <h3>Trust</h3>
+          <p>We build lasting relationships with our customers through transparency, honest descriptions, and exceptional customer service. Your satisfaction is our primary concern.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Process Section -->
+  <section class="process-section">
+    <div class="process-container">
+      <h2 class="section-title">Our Curation Process</h2>
+      <p class="section-description">How we find and select the perfect pieces for our collection</p>
+      
+      <div class="process-grid">
+        <div class="process-step">
+          <div class="step-number">01</div>
+          <h4>Discovery</h4>
+          <p>We travel to flea markets, antique bazaars, and antique shops worldwide, searching for unique pieces with compelling histories.</p>
+        </div>
+
+        <div class="process-step">
+          <div class="step-number">02</div>
+          <h4>Love</h4>
+          <p>We have a deep appreciation for the craftsmanship and history behind each piece, ensuring they are treated with the utmost care and respect.</p>
+        </div>
+        
+        
+        <div class="process-step">
+          <div class="step-number">03</div>
+          <h4>Stories</h4>
+          <p>Every piece has a story to tell. We delve into the history and provenance of each item, sharing its journey with our customers.</p>
+        </div>
+
+        <div class="process-step">
+          <div class="step-number">04</div>
+          <h4>Saying Goodbye</h4>
+          <p>When it's time to part with a piece, we ensure it finds a new home where it will be cherished. Our commitment to the journey of each item never ends.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Team Section -->
+  <section class="team-section">
+    <div class="team-container">
+      <h2 class="section-title">Meet Kim</h2>
+      <div class="team-content">
+        <div class="team-member">
+          <div class="member-image">
+            <div class="image-placeholder">
+              <i class="fa-solid fa-user"></i>
+            </div>
+          </div>
+          <div class="member-info">
+            <h3>Kim</h3>
+            <p class="member-title">Founder</p>
+            <p class="member-bio">
+              With over a decade of experience in antiques and collectibles, Kim has developed an eye for exceptional pieces that tell compelling stories. Her travels have taken her to markets across Europe, Asia, and the Americas, building relationships with dealers and artisans who share her passion for preserving history.
+            </p>
+            <p class="member-bio">
+              Kim's expertise spans furniture, decorative arts, jewelry, and rare collectibles. She believes that antiques should be lived with and enjoyed, not merely displayed, and she takes pride in helping customers find pieces that will become treasured parts of their lives.
+            </p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Contact Section -->
+  <section class="contact-section">
+    <div class="contact-container">
+      <h2 class="section-title">Get in Touch</h2>
+      <p class="section-description">We'd love to hear from you and help you find your next treasure</p>
+      
+      <div class="contact-grid">
+        <div class="contact-card">
+          <div class="contact-icon">
+            <i class="fa-solid fa-envelope"></i>
+          </div>
+          <h4>Email Us</h4>
+          <p>edwardsemporiumau@gmail.com</p>
+          <a href="mailto:edwardsemporiumau@gmail.com" class="contact-btn">Send Message</a>
+        </div>
+        
+        <div class="contact-card">
+          <div class="contact-icon">
+            <i class="fa-solid fa-phone"></i>
+          </div>
+          <h4>Call Us</h4>
+          <p>+61 418 456 646</p>
+          <a href="tel:+61418456646" class="contact-btn">Call Now</a>
+        </div>
+        
+        <div class="contact-card">
+          <div class="contact-icon">
+            <i class="fa-solid fa-clock"></i>
+          </div>
+          <h4>Response Time</h4>
+          <p>Within 24 hours</p>
+          <span class="contact-note">We respond to all inquiries promptly</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- CTA Section -->
+  <section class="cta-section">
+    <div class="cta-container">
+      <h2 class="cta-title">Ready to Discover Your Next Treasure?</h2>
+      <p class="cta-subtitle">Explore our curated collection of authentic antiques and vintage finds</p>
+      <div class="cta-buttons">
+        <a href="{% url 'antiques:view_antiques' %}" class="cta-btn primary">Browse Collection</a>
+        <a href="{% url 'service:blogs' %}" class="cta-btn secondary">Read Our Stories</a>
+      </div>
+    </div>
+  </section>
+</div>
+
 {% endblock %}

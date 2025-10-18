@@ -63,6 +63,8 @@ class Antique(BaseModel):
                 unique_slug = f'{base_slug}-{counter}'
                 counter += 1
             self.slug = unique_slug
+
+        self.is_sold = self.quantity == 0
         super().save(*args, **kwargs)
 
 class AntiqueImage(models.Model):
@@ -98,7 +100,7 @@ class DailyPick(models.Model):
         today = timezone.localdate()
         daily_pick, created = DailyPick.objects.get_or_create(date=today)
         if daily_pick.picks.count() == 0:
-            antiques = list(Antique.objects.all())
+            antiques = list(Antique.objects.all().filter(is_sold=False)) # prevents sold antiques from being picked
             if antiques:
                 daily_pick.picks.set(random.sample(antiques, min(3, len(antiques))))
         return daily_pick.picks.all()

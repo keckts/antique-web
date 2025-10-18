@@ -1,260 +1,314 @@
 {% load static %}
 <!DOCTYPE html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Kim's Antiques - Curated Treasures from Around the World</title>
-    <link rel="stylesheet" href="{% static 'css/index.css' %}">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/7.0.1/css/all.min.css">
-
-</head>
-<body>
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Edwards Emporium - Curated Treasures from Around the World</title>
+    <link rel="stylesheet" href="{% static 'css/index.css' %}" />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/7.0.1/css/all.min.css"
+    />
+  </head>
+  <body>
     <header class="header">
-        <div class="container">
-            <nav class="nav">
-                <h1 class="logo">Kim's Antiques</h1>
-                <ul class="nav-links">
-                    <li><a href="#home">Home</a></li>
-                    <li><a href="{% url 'antiques:view_antiques' %}">Shop</a></li>
-                    <li><a href="{% url 'service:blogs' %}">Blog</a></li>
-                    <li><a href="#about">About</a></li>
-                    <li><a href="#contact">Contact</a></li>
-                    <li>
-                        <a href="{% url 'accounts:login_view' %}">Login</a>
-                    </li>
-                    <li>
-                        <a href="{% url 'accounts:signup_view' %}"><strong>Sign Up</strong></a>
-                    </li>
-                </ul>
-            </nav>
-        </div>
+      <div class="container">
+        <nav class="nav">
+          <h1 class="logo">Edwards Emporium</h1>
+          <ul class="nav-links">
+            <li><a href="#home">Home</a></li>
+            <li><a href="{% url 'antiques:view_antiques' %}">Shop</a></li>
+            <li><a href="{% url 'service:blogs' %}">Blog</a></li>
+            <li><a href="#about">About</a></li>
+            <li><a href="#contact">Contact</a></li>
+            <li>
+              <a href="{% url 'accounts:login_view' %}">Login</a>
+            </li>
+            <li>
+              <a href="{% url 'accounts:signup_view' %}"
+                ><strong>Sign Up</strong></a
+              >
+            </li>
+          </ul>
+        </nav>
+      </div>
     </header>
 
     <section id="home" class="hero">
-        <div class="container">
-            <div class="hero-content">
-                <h2 class="hero-title">Discover Timeless Treasures</h2>
-                <p class="hero-subtitle">Curated antiques from flea markets around the world</p>
-                <a href="{% url 'antiques:view_antiques' %}" class="btn">Explore Collection</a>
-                <br><br>
-                <a href="{% url 'accounts:signup_view' %}" class="btn btn-inverted">Sign Up Today</a>
-            </div>
+      <div class="container">
+        <div class="hero-content">
+          <h2 class="hero-title">Discover Timeless Treasures</h2>
+          <p class="hero-subtitle">
+            Curated antiques from flea markets around the world
+          </p>
+          <a href="{% url 'antiques:view_antiques' %}" class="btn"
+            >Explore Collection</a
+          >
+          <br /><br />
+          <a href="{% url 'accounts:signup_view' %}" class="btn btn-inverted"
+            >Sign Up Today</a
+          >
         </div>
+      </div>
     </section>
 
     <section id="shop" class="section antiques-section">
-        <div class="container">
-            <h2 class="section-title">Antiques For Sale</h2>
-            <p class="section-description">Each piece tells a story, carefully selected from our travels</p>
-            <div class="grid">
-                <div class="card">
-                    <div class="card-icon">◇</div>
-                    <h3>Furniture</h3>
-                    <p>Classic pieces that bring character to any space</p>
-                </div>
-                <div class="card">
-                    <div class="card-icon">◈</div>
-                    <h3>Decorative Arts</h3>
-                    <p>Unique ornaments and artistic treasures</p>
-                </div>
-                <div class="card">
-                    <div class="card-icon">◆</div>
-                    <h3>Collectibles</h3>
-                    <p>Rare finds from around the globe</p>
-                </div>
-            </div>
-            <div class="cta-container">
-                <a href="/shop" class="btn-secondary">View All Items</a>
-            </div>
+      <div class="container">
+        <h2 class="section-title">Antiques For Sale</h2>
+        <p class="section-description">
+          Each piece tells a story, carefully selected from our travels
+        </p>
+        <div class="grid">
+          <div class="card">
+            <div class="card-icon">◇</div>
+            <h3>Furniture</h3>
+            <p>Classic pieces that bring character to any space</p>
+          </div>
+          <div class="card">
+            <div class="card-icon">◈</div>
+            <h3>Decorative Arts</h3>
+            <p>Unique ornaments and artistic treasures</p>
+          </div>
+          <div class="card">
+            <div class="card-icon">◆</div>
+            <h3>Collectibles</h3>
+            <p>Rare finds from around the globe</p>
+          </div>
         </div>
+        <div class="cta-container">
+          <a href="/shop" class="btn-secondary">View All Items</a>
+        </div>
+      </div>
     </section>
 
     <section id="blog" class="section blog-section">
-        <div class="container">
-            <h2 class="section-title">Stories & Travels</h2>
-            <p class="section-description">Follow our journey through flea markets and antique discoveries</p>
-            <div class="blog-grid">
-                <div class="blog-card">
-                    <div class="blog-category">Antiques</div>
-                    <h3>The Art of Identifying Authentic Pieces</h3>
-                    <p>Learn the key markers that distinguish genuine antiques from reproductions</p>
-                    <a href="/blog/antiques" class="link">Read more →</a>
-                </div>
-                <div class="blog-card">
-                    <div class="blog-category">Flea Markets</div>
-                    <h3>Hidden Gems of European Markets</h3>
-                    <p>Our favorite flea markets across Europe and what makes them special</p>
-                    <a href="/blog/flea-markets" class="link">Read more →</a>
-                </div>
-                <div class="blog-card">
-                    <div class="blog-category">Travel</div>
-                    <h3>A Month in the Mediterranean</h3>
-                    <p>Exploring antique shops and coastal markets along the Mediterranean</p>
-                    <a href="/blog/travel" class="link">Read more →</a>
-                </div>
-            </div>
+      <div class="container">
+        <h2 class="section-title">Stories & Travels</h2>
+        <p class="section-description">
+          Follow our journey through flea markets and antique discoveries
+        </p>
+        <div class="blog-grid">
+          <div class="blog-card">
+            <div class="blog-category">Antiques</div>
+            <h3>The Art of Identifying Authentic Pieces</h3>
+            <p>
+              Learn the key markers that distinguish genuine antiques from
+              reproductions
+            </p>
+            <a href="/blog/antiques" class="link">Read more →</a>
+          </div>
+          <div class="blog-card">
+            <div class="blog-category">Flea Markets</div>
+            <h3>Hidden Gems of European Markets</h3>
+            <p>
+              Our favorite flea markets across Europe and what makes them
+              special
+            </p>
+            <a href="/blog/flea-markets" class="link">Read more →</a>
+          </div>
+          <div class="blog-card">
+            <div class="blog-category">Travel</div>
+            <h3>A Month in the Mediterranean</h3>
+            <p>
+              Exploring antique shops and coastal markets along the
+              Mediterranean
+            </p>
+            <a href="/blog/travel" class="link">Read more →</a>
+          </div>
         </div>
+      </div>
     </section>
 
     <section id="about" class="section about-section">
-        <div class="container">
-            <div class="about-content">
-                <h2 class="section-title">Melbourne's Antique Destination</h2>
-                <p class="about-text">
-                    Located in the heart of Melbourne, Victoria, Kim's Antiques brings together carefully curated pieces 
-                    from flea markets and antique fairs around the world. Each item is selected for its history, 
-                    craftsmanship, and timeless appeal.
-                </p>
-                <p class="about-text">
-                    Whether you're a seasoned collector or beginning your journey into antiques, 
-                    we invite you to explore our collection and discover pieces that resonate with you.
-                </p>
-            </div>
+      <div class="container">
+        <div class="about-content">
+          <h2 class="section-title">Melbourne's Antique Destination</h2>
+          <p class="about-text">
+            Located in the heart of Melbourne, Victoria, Edwards Emporium brings
+            together carefully curated pieces from flea markets and antique
+            fairs around the world. Each item is selected for its history,
+            craftsmanship, and timeless appeal.
+          </p>
+          <p class="about-text">
+            Whether you're a seasoned collector or beginning your journey into
+            antiques, we invite you to explore our collection and discover
+            pieces that resonate with you.
+          </p>
         </div>
+      </div>
     </section>
 
     <section id="contact" class="section contact-section">
-        <div class="container">
-            <h2 class="section-title">Get In Touch</h2>
-            <p class="section-description">Connect with us through your preferred channel</p>
-            <div class="contact-grid">
-                <a href="mailto:kimberleae@gmail.com" class="contact-card" target="_blank">
-                    <div class="contact-icon">✉</div>
-                    <h3>Email</h3>
-                    <p>kimberleae@gmail.com</p>
-                </a>
-                <a href="tel:+61123456789" class="contact-card">
-                    <div class="contact-icon"><i class="fas fa-phone"></i></div>
-                    <h3>Phone</h3>
-                    <p>+61 (0)3 1234 5678</p>
-                </a>
-                <a href="https://instagram.com/kimsantiques" class="contact-card" target="_blank">
-                    <div class="contact-icon"><i class="fab fa-instagram"></i></div>
-                    <h3>Instagram</h3>
-                    <p>@kimsantiques</p>
-                </a>
-                <a href="https://facebook.com/kimsantiques" class="contact-card" target="_blank">
-                    <div class="contact-icon"><i class="fab fa-facebook-f"></i></div>
-                    <h3>Facebook</h3>
-                    <p>/kimsantiques</p>
-                </a>
-                <a href="https://x.com/kimsantiques" class="contact-card" target="_blank">
-                    <div class="contact-icon">𝕏</div>
-                    <h3>X (Twitter)</h3>
-                    <p>@kimsantiques</p>
-                </a>
-            </div>
+      <div class="container">
+        <h2 class="section-title">Get In Touch</h2>
+        <p class="section-description">
+          Connect with us through your preferred channel
+        </p>
+        <div class="contact-grid">
+          <a
+            href="mailto:kimberleae@gmail.com"
+            class="contact-card"
+            target="_blank"
+          >
+            <div class="contact-icon">✉</div>
+            <h3>Email</h3>
+            <p>kimberleae@gmail.com</p>
+          </a>
+          <a href="tel:+61123456789" class="contact-card">
+            <div class="contact-icon"><i class="fas fa-phone"></i></div>
+            <h3>Phone</h3>
+            <p>+61 (0)3 1234 5678</p>
+          </a>
+          <a
+            href="https://instagram.com/kimsantiques"
+            class="contact-card"
+            target="_blank"
+          >
+            <div class="contact-icon"><i class="fab fa-instagram"></i></div>
+            <h3>Instagram</h3>
+            <p>@kimsantiques</p>
+          </a>
+          <a
+            href="https://facebook.com/kimsantiques"
+            class="contact-card"
+            target="_blank"
+          >
+            <div class="contact-icon"><i class="fab fa-facebook-f"></i></div>
+            <h3>Facebook</h3>
+            <p>/kimsantiques</p>
+          </a>
+          <a
+            href="https://x.com/kimsantiques"
+            class="contact-card"
+            target="_blank"
+          >
+            <div class="contact-icon">𝕏</div>
+            <h3>X (Twitter)</h3>
+            <p>@kimsantiques</p>
+          </a>
         </div>
+      </div>
     </section>
 
     <section class="section newsletter-section">
-        <div class="container">
-            <div class="newsletter-box">
-                <h2 class="newsletter-title">Stay Connected</h2>
-                <p class="newsletter-description">Subscribe for updates on new arrivals, market finds, and travel stories</p>
-                <form method="POST" action="{% url 'subscribe' %}" class="newsletter-form">
-                    {% csrf_token %}
-                    <input 
-                        type="email" 
-                        name="email" 
-                        placeholder="Enter your email address" 
-                        required 
-                        class="newsletter-input"
-                    >
-                    <button type="submit" class="btn">Subscribe</button>
-                </form>
-            </div>
+      <div class="container">
+        <div class="newsletter-box">
+          <h2 class="newsletter-title">Stay Connected</h2>
+          <p class="newsletter-description">
+            Subscribe for updates on new arrivals, market finds, and travel
+            stories
+          </p>
+          <form
+            method="POST"
+            action="{% url 'service:subscribe' 'false' %}"
+            class="newsletter-form"
+          >
+            {% csrf_token %}
+            <input
+              type="email"
+              name="email"
+              placeholder="Enter your email address"
+              required
+              class="newsletter-input"
+            />
+            <button type="submit" class="btn">Subscribe</button>
+          </form>
         </div>
+      </div>
     </section>
 
     <footer class="footer">
-        <div class="container">
-            <div class="footer-content">
-                <div class="footer-column">
-                    <h3>Kim's Antiques</h3>
-                    <p>Melbourne, Victoria<br>Australia</p>
-                </div>
-                <div class="footer-column">
-                    <h3>Quick Links</h3>
-                    <ul class="footer-links">
-                        <li><a href="#shop">Shop</a></li>
-                        <li><a href="{% url 'service:blogs' %}">Blog</a></li>
-                        <li><a href="{% url 'service:about_us' %}">About</a></li>
-                    </ul>
-                </div>
-                <div class="footer-column">
-                    <h3>Contact</h3>
-                    <p>Email: kimberleae@gmail.com</p>
-                </div>
-            </div>
-            <div class="footer-bottom">
-                <p>&copy; 2025 Kim's Antiques. All rights reserved.</p>
-            </div>
+      <div class="container">
+        <div class="footer-content">
+          <div class="footer-column">
+            <h3>Edwards Emporium</h3>
+            <p>Melbourne, Victoria<br />Australia</p>
+          </div>
+          <div class="footer-column">
+            <h3>Quick Links</h3>
+            <ul class="footer-links">
+              <li><a href="#shop">Shop</a></li>
+              <li><a href="{% url 'service:blogs' %}">Blog</a></li>
+              <li><a href="{% url 'service:about_us' %}">About</a></li>
+            </ul>
+          </div>
+          <div class="footer-column">
+            <h3>Contact</h3>
+            <p>Email: kimberleae@gmail.com</p>
+          </div>
         </div>
+        <div class="footer-bottom">
+          <p>&copy; 2025 Edwards Emporium. All rights reserved.</p>
+        </div>
+      </div>
     </footer>
 
     <!-- Success Modal -->
     <div id="subscribeModal" class="modal">
-        <div class="modal-content">
-            <span class="modal-close">&times;</span>
-            <div class="modal-icon">✓</div>
-            <h2 class="modal-title">Thank You for Subscribing!</h2>
-            <p class="modal-text">You've successfully joined our mailing list. Get ready to receive updates on new arrivals, exclusive antique finds, and stories from flea markets around the world.</p>
-            <p class="modal-subtext">Keep an eye on your inbox!</p>
-            <button class="btn modal-btn">Continue Exploring</button>
-        </div>
+      <div class="modal-content">
+        <span class="modal-close">&times;</span>
+        <div class="modal-icon">✓</div>
+        <h2 class="modal-title">Thank You for Subscribing!</h2>
+        <p class="modal-text">
+          You've successfully joined our mailing list. Get ready to receive
+          updates on new arrivals, exclusive antique finds, and stories from
+          flea markets around the world.
+        </p>
+        <p class="modal-subtext">Keep an eye on your inbox!</p>
+        <button class="btn modal-btn">Continue Exploring</button>
+      </div>
     </div>
 
     <script>
-        // Smooth scrolling for anchor links
-        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
-            anchor.addEventListener('click', function (e) {
-                e.preventDefault();
-                const target = document.querySelector(this.getAttribute('href'));
-                if (target) {
-                    target.scrollIntoView({
-                        behavior: 'smooth',
-                        block: 'start'
-                    });
-                }
-            });
-        });
+      // Smooth scrolling for anchor links
+      document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+          anchor.addEventListener('click', function (e) {
+              e.preventDefault();
+              const target = document.querySelector(this.getAttribute('href'));
+              if (target) {
+                  target.scrollIntoView({
+                      behavior: 'smooth',
+                      block: 'start'
+                  });
+              }
+          });
+      });
 
-        // Modal functionality
-        const modal = document.getElementById('subscribeModal');
-        const closeBtn = document.querySelector('.modal-close');
-        const continueBtn = document.querySelector('.modal-btn');
+      // Modal functionality
+      const modal = document.getElementById('subscribeModal');
+      const closeBtn = document.querySelector('.modal-close');
+      const continueBtn = document.querySelector('.modal-btn');
 
-        // Check if subscription was successful (Django message)
-        {% if messages %}
-            {% for message in messages %}
-                {% if message.tags == 'success' %}
-                    modal.style.display = 'flex';
-                {% endif %}
-            {% endfor %}
-        {% endif %}
+      // Check if subscription was successful (Django message)
+      {% if messages %}
+          {% for message in messages %}
+              {% if message.tags == 'success' %}
+                  modal.style.display = 'flex';
+              {% endif %}
+          {% endfor %}
+      {% endif %}
 
-        // Close modal when clicking X
-        if (closeBtn) {
-            closeBtn.onclick = function() {
-                modal.style.display = 'none';
-            }
-        }
+      // Close modal when clicking X
+      if (closeBtn) {
+          closeBtn.onclick = function() {
+              modal.style.display = 'none';
+          }
+      }
 
-        // Close modal when clicking Continue button
-        if (continueBtn) {
-            continueBtn.onclick = function() {
-                modal.style.display = 'none';
-            }
-        }
+      // Close modal when clicking Continue button
+      if (continueBtn) {
+          continueBtn.onclick = function() {
+              modal.style.display = 'none';
+          }
+      }
 
-        // Close modal when clicking outside of it
-        window.onclick = function(event) {
-            if (event.target == modal) {
-                modal.style.display = 'none';
-            }
-        }
+      // Close modal when clicking outside of it
+      window.onclick = function(event) {
+          if (event.target == modal) {
+              modal.style.display = 'none';
+          }
+      }
     </script>
-</body>
+  </body>
 </html>

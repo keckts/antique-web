@@ -11,6 +11,14 @@
     <h1 class="page-title">Dashboard</h1>
     <p class="lead">Welcome to your dashboard!</p>
 
+    {% if user.is_superuser%}
+    <div class="admin-panel-link mb-4">
+        <a href="{% url 'service:admin_panel' %}" class="btn btn-primary">
+            Go to Admin Panel
+        </a>
+    </div>
+    {% endif %}
+
     <!-- Daily Picks Section -->
     {% if picks %}
     <section class="mb-5">
@@ -82,7 +90,7 @@
     </section>
     {% endif %}
 
-        <!-- Daily Picks Section -->
+    <!-- Recently Added Section -->
     {% if recent_antiques %}
     <section class="mb-5">
         <h2 class="mb-3">Recently Added</h2>
@@ -90,6 +98,76 @@
                 <!-- Antiques Grid -->
     <div class="antiques-grid" id="antiquesGrid">
         {% for a in recent_antiques %}
+        <div class="antique-card" 
+             data-title="{{ a.title|lower }}" 
+             data-description="{{ a.description|lower }}"
+             data-type="{{ a.type_of_antique }}"
+             onclick="window.location.href='{% url 'antiques:antique_detail' a.short_id a.slug %}'">
+            
+            <div class="card-img-wrapper">
+                {% if a.images.exists %}
+                    <div class="image-carousel" data-antique-id="{{ a.id }}">
+                        {% for img in a.images.all %}
+                            <img src="{{ img.image.url }}" 
+                                 alt="{{ a.title }}" 
+                                 class="carousel-image {% if forloop.first %}active{% endif %}"
+                                 loading="lazy">
+                        {% endfor %}
+                        
+                        {% if a.images.count > 1 %}
+                            <div class="carousel-controls">
+                                <button class="carousel-btn prev-btn" onclick="event.stopPropagation(); changeImage(this, -1)">
+                                    <i class="fa-solid fa-chevron-left"></i>
+                                </button>
+                                <button class="carousel-btn next-btn" onclick="event.stopPropagation(); changeImage(this, 1)">
+                                    <i class="fa-solid fa-chevron-right"></i>
+                                </button>
+                            </div>
+                            <div class="image-dots">
+                                {% for img in a.images.all %}
+                                    <span class="dot {% if forloop.first %}active{% endif %}"></span>
+                                {% endfor %}
+                            </div>
+                        {% endif %}
+                    </div>
+                {% else %}
+                    <img src="{% static 'images/placeholder.png' %}" alt="No Image Available">
+                {% endif %}
+            </div>
+
+            <div class="card-body">
+                <h5 class="card-title">{{ a.title }}</h5>
+                <p class="card-type">
+                    <i class="fa-solid fa-tag"></i> {{ a.type_of_antique }}
+                </p>
+                <p class="card-description">{{ a.description|truncatewords:15 }}</p>
+                <div class="card-footer">
+                    <p class="price-tag">${{ a.price }}</p>
+                    {% if a.quantity > 0 %}
+                        <span class="stock-badge in-stock">In Stock</span>
+                    {% else %}
+                        <span class="stock-badge out-of-stock">Sold Out</span>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+        {% empty %}
+        <div class="no-results">
+            <i class="fa-solid fa-search"></i>
+            <p>No antiques found</p>
+        </div>
+        {% endfor %}
+        </div>
+    </section>
+    {% endif %}
+
+    {% if recent_sold_antiques %}
+    <section class="mb-5">
+        <h2 class="mb-3">Recently Sold</h2>
+        <div class="row g-4">
+                <!-- Antiques Grid -->
+    <div class="antiques-grid" id="antiquesGrid">
+        {% for a in recent_sold_antiques %}
         <div class="antique-card" 
              data-title="{{ a.title|lower }}" 
              data-description="{{ a.description|lower }}"

@@ -25,6 +25,8 @@ class CustomUser(AbstractUser):
     email = models.EmailField(unique=True)
     is_email_verified = models.BooleanField(default=False)
 
+    stripe_customer_id = models.CharField(max_length=255, blank=True, null=True)
+
     USERNAME_FIELD = "email"
     REQUIRED_FIELDS = []
 
@@ -77,3 +79,26 @@ class EmailVerification(models.Model):
         from datetime import timedelta
         expiry_time = self.created_at + timedelta(minutes=30)
         return timezone.now() > expiry_time
+
+class PasswordReset(models.Model):
+    user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, related_name='password_resets')
+    token = models.CharField(max_length=100, unique=True)
+    created_at = models.DateTimeField(default=timezone.now)
+    used = models.BooleanField(default=False)
+    
+    class Meta:
+        ordering = ['-created_at']
+    
+    def __str__(self):
+        return f"{self.user.email} - {'Used' if self.used else 'Active'}"
+    
+    def is_expired(self):
+        """Check if password reset token has expired (1 hour)"""
+        from datetime import timedelta
+        expiry_time = self.created_at + timedelta(hours=1)
+        return timezone.now() > expiry_time
+    
+    def is_valid(self):
+        """Check if token is valid (not used and not expired)"""
+        return not self.used and not self.is_expired()
+

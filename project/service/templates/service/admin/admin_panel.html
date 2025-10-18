@@ -1,0 +1,39 @@
+{% extends 'dashboard/base.html' %} {% block content %} {% load static %}
+<style>
+    .admin-panel {
+      max-width: 900px;
+      margin: 40px auto;
+      padding: 30px;
+      background: #fff;
+      border-radius: 8px;
+      box-shadow: 0 6px 18px rgba(
+  30px;
+      font-size: 2rem;
+      border-bottom: 2px solid #111;
+      padding-bottom: 10px;
+    }
+
+    .welcome {
+      font-size: 1.2rem;
+      margin-bottom: 25px;
+    }
+</style>
+
+<div class="admin-panel">
+  <h1>Admin Dashboard</h1>
+  <p class="welcome">Welcome, {{ request.user.email }}!</p>
+
+  <a class="btn btn-primary" href="{% url 'admin:index' %}">Django Admin</a>
+  <a class="btn btn-primary" href="{% url 'service:send_mass_email_page' %}"
+    >Send Mass Email</a
+  >
+  <a class="btn btn-primary" href="{% url 'antiques:create_antique' %}"
+    >Create Antique</a
+  >
+  <a href="{% url 'antiques:view_antiques' %}" class="btn btn-primary"
+    >View Antiques</a
+  >
+
+  <!-- Add more admin links as needed -->
+</div>
+{% endblock %}

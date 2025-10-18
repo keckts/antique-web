@@ -17,7 +17,15 @@ SECRET_KEY = 'django-insecure-v%%c)t2gpw$7j2b@i8j7zjc5r-m#8-d$(nfo$z6ld%*t!3ju(k
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ['https://stunning-dollop-qw5g9q4v5rg2xxwj-8000.app.github.dev', 'localhost', 'localhost:8000', '127.0.0.1']
+#ALLOWED_HOSTS = ['51bd774e683f.ngrok-free.app', 'localhost', 'localhost:8000', '127.0.0.1']
+ALLOWED_HOSTS = ['*'] # WARNING: CHANGE IN PRODUCTION
+
+CSRF_TRUSTED_ORIGINS = [
+    "https://localhost:8000",
+    "http://localhost:8000",  # if you also test HTTP
+    "https://127.0.0.1:8000",
+    "https://*.ngrok-free.app", # change in production
+]
 
 
 # Application definition
@@ -139,17 +147,19 @@ STRIPE_SECRET_KEY = os.getenv('STRIPE_SECRET_KEY')
 STRIPE_PUBLISHABLE_KEY = os.getenv('STRIPE_PUBLISHABLE_KEY')
 STRIPE_WEBHOOK_SECRET = os.getenv('STRIPE_WEBHOOK_SECRET')
 
-CSRF_TRUSTED_ORIGINS = [
-    "https://localhost:8000",
-    "http://localhost:8000",  # if you also test HTTP
-    "https://127.0.0.1:8000",
-    "https://stunning-dollop-qw5g9q4v5rg2xxwj-8000.app.github.dev",
-]
 
-# Sends emails to the console instead of actually sending them
-# CHANGE IN PRODUCTION
-EMAIL_BACKEND = "django.core.mail.backends.console.EmailBackend"
-EMAIL_HOST = "localhost"
-EMAIL_PORT = 1025  # Not used for console backend, just for reference
-EMAIL_USE_TLS = False
-DEFAULT_FROM_EMAIL = "no-reply@example.com"
+
+# Use SMTP backend to send real emails
+EMAIL_BACKEND = "django.core.mail.backends.smtp.EmailBackend"
+
+# SMTP server settings (Gmail example)
+EMAIL_HOST = "smtp.gmail.com"
+EMAIL_PORT = 587
+EMAIL_USE_TLS = True  # Gmail requires TLS
+
+# Authentication credentials
+EMAIL_HOST_USER = os.getenv('EMAIL_USER')
+EMAIL_HOST_PASSWORD = os.getenv('EMAIL_PASS')
+
+# Default "from" email address
+DEFAULT_FROM_EMAIL = EMAIL_HOST_USER

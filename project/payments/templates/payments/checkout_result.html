@@ -2,19 +2,132 @@
 {% load static %}
 
 {% block content %}
-<div class="checkout-result-container" style="text-align:center; margin:50px;">
+<link rel="stylesheet" href="{% static 'css/payments/checkout_result.css' %}">
+
+<div class="checkout-result-page">
+  <div class="result-container">
     {% if success %}
-        <h1>🎉 Payment Successful!</h1>
-        <p>Thank you for your purchase. Your antique is on its way!</p>
-        <a href="{% url 'antiques:view_antiques' %}" class="btn-primary">Back to Browse</a>
+      <!-- Success State -->
+      
+      
+      <div class="result-icon success">
+        <i class="fa-solid fa-check"></i>
+      </div>
+      
+      <h1 class="result-title success">Payment Successful!</h1>
+      
+      <p class="result-message">
+        Thank you for your purchase! Your order has been confirmed and you'll receive an email confirmation shortly.
+      </p>
+      
+      <div class="result-info">
+        <h4>
+          <i class="fa-solid fa-info-circle"></i>
+          What's Next?
+        </h4>
+        <ul>
+          <li>You'll receive an order confirmation email</li>
+          <li>Check the <a href="{% url 'payments:orders' %}">orders page</a> for an invoice</li>
+          <li>The seller will try to ship your item as fast as possible</li>
+        </ul>
+      </div>
+
+      <br>
+      
+      <div class="result-actions">
+        <a href="{% url 'payments:orders' %}" class="result-btn success">
+          <i class="fa-solid fa-receipt"></i>
+          View My Orders
+        </a>
+        <a href="{% url 'antiques:view_antiques' %}" class="result-btn secondary">
+          <i class="fa-solid fa-arrow-left"></i>
+          Continue Shopping
+        </a>
+      </div>
+      
     {% elif canceled %}
-        <h1>⚠️ Payment Canceled</h1>
-        <p>Your payment was canceled. You can try again anytime.</p>
-        <a href="{% url 'antiques:view_antiques' %}" class="btn-secondary">Back to Browse</a>
+      <!-- Canceled State -->
+      <div class="result-icon warning">
+        <i class="fa-solid fa-xmark"></i>
+      </div>
+      
+      <h1 class="result-title warning">Payment Canceled</h1>
+      
+      <p class="result-message">
+        Your payment was canceled. No charges have been made to your account.
+      </p>
+      
+      <div class="result-info">
+        <h4>
+          <i class="fa-solid fa-lightbulb"></i>
+          Need Help?
+        </h4>
+        <p>
+          If you experienced any issues during checkout, please contact our support team or try again.
+        </p>
+      </div>
+
+      <br>
+      
+      <div class="result-actions">
+        <a href="{% url 'antiques:view_antiques' %}" class="result-btn primary">
+          <i class="fa-solid fa-shopping-cart"></i>
+          Back to Shopping
+        </a>
+      </div>
+      
     {% else %}
-        <h1>ℹ️ Checkout</h1>
-        <p>No status available. Please go back and try again.</p>
-        <a href="{% url 'antiques:view_antiques' %}" class="btn-primary">Back to Browse</a>
+      <!-- Unknown State -->
+      <div class="result-icon info">
+        <i class="fa-solid fa-question"></i>
+      </div>
+      
+      <h1 class="result-title info">Checkout Status</h1>
+      
+      <p class="result-message">
+        We couldn't determine your payment status. Please check your orders or try again.
+      </p>
+      
+      <div class="result-info">
+        <h4>
+          <i class="fa-solid fa-shield-halved"></i>
+          Your Security
+        </h4>
+        <p>
+          If you're unsure about a transaction, check your email for confirmations or contact support.
+        </p>
+      </div>
+
+      <br>
+      
+      <div class="result-actions">
+        <a href="{% url 'payments:orders' %}" class="result-btn primary">
+          <i class="fa-solid fa-receipt"></i>
+          Check My Orders
+        </a>
+        <a href="{% url 'antiques:view_antiques' %}" class="result-btn secondary">
+          <i class="fa-solid fa-home"></i>
+          Back to Home
+        </a>
+      </div>
     {% endif %}
+  </div>
 </div>
+
+{% if success %}
+<script>
+  // Add some celebration effects for successful payment
+  document.addEventListener('DOMContentLoaded', function() {
+    // Optional: Add sound effect or additional animations
+    console.log('🎉 Payment successful! Welcome to the family!');
+    
+    // Auto-redirect after 10 seconds (optional)
+    setTimeout(function() {
+      // Uncomment the line below if you want auto-redirect
+      // window.location.href = "{% url 'payments:orders' %}";
+    }, 10000);
+  });
+</script>
+{% endif %}
+
 {% endblock %}

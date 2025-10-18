@@ -9,7 +9,7 @@ from project.generic_functions import random_text
 class AntiqueForm(forms.ModelForm):
     class Meta:
         model = Antique
-        exclude = ['id', 'owner', 'short_id', 'created_at', 'updated_at', 'is_sold', 'seller']
+        exclude = ['id', 'owner', 'short_id', 'created_at', 'updated_at', 'is_sold', 'seller', 'stripe_product_id', 'stripe_price_id']
         widgets = {
             'title': forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'e.g., Rare Victorian Teapot'}),
             'description': forms.Textarea(attrs={'class': 'form-control', 'rows': 1, 'placeholder': 'Brief description (Shows in listings)'}),

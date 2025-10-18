@@ -1,0 +1,146 @@
+<!-- Reusable Modal -->
+<div id="customModal" class="custom-modal">
+  <div class="custom-modal-content">
+    <span id="customModalClose" class="custom-modal-close">&times;</span>
+    <p id="customModalText"></p>
+    <div id="customModalButtons" class="custom-modal-buttons"></div>
+  </div>
+</div>
+
+<style>
+  /* Modal background */
+  .custom-modal {
+    display: none;
+    position: fixed;
+    z-index: 1000;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    overflow: auto;
+    background-color: rgba(0, 0, 0, 0.5);
+    backdrop-filter: blur(2px);
+    transition: opacity 0.3s ease;
+    opacity: 0;
+  }
+
+  /* Modal content */
+  .custom-modal-content {
+    background-color: #fff;
+    margin: 10% auto;
+    padding: 20px 30px;
+    border-radius: 12px;
+    max-width: 500px;
+    text-align: center;
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.2);
+    transform: translateY(-50px);
+    transition: transform 0.3s ease;
+    position: relative;
+  }
+
+  /* Close button */
+  .custom-modal-close {
+    position: absolute;
+    top: 12px;
+    right: 16px;
+    font-size: 1.5rem;
+    cursor: pointer;
+    font-weight: bold;
+  }
+
+  /* Modal text */
+  #customModalText {
+    margin-bottom: 20px;
+    font-size: 1.1rem;
+    line-height: 1.4;
+  }
+
+  /* Modal buttons container */
+  .custom-modal-buttons {
+    display: flex;
+    justify-content: center;
+    gap: 12px;
+    flex-wrap: wrap;
+  }
+
+  /* Button styles */
+  .custom-modal-buttons button {
+    padding: 10px 20px;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    font-weight: bold;
+    transition: background-color 0.2s ease, transform 0.2s ease;
+  }
+
+  .custom-modal-buttons button:hover {
+    transform: scale(1.05);
+  }
+</style>
+
+<script>
+  function openModal(text, buttons = []) {
+    const modal = document.getElementById("customModal");
+    const modalText = document.getElementById("customModalText");
+    const modalButtons = document.getElementById("customModalButtons");
+    const modalClose = document.getElementById("customModalClose");
+
+    // Set modal text
+    modalText.textContent = text;
+
+    // Clear previous buttons
+    modalButtons.innerHTML = "";
+
+    // Add user-defined buttons
+    buttons.forEach((btn) => {
+      const [btnText, btnColor, btnUrl] = btn;
+      const button = document.createElement("button");
+      button.textContent = btnText;
+      button.style.backgroundColor = btnColor || "#007BFF";
+      button.style.color = "#fff";
+      button.onclick = () => {
+        if (btnUrl) {
+          window.location.href = btnUrl;
+        } else {
+          closeModal();
+        }
+      };
+      modalButtons.appendChild(button);
+    });
+
+    // Add default Cancel button if not present
+    if (!buttons.some((b) => b[0].toLowerCase() === "cancel")) {
+      const cancelBtn = document.createElement("button");
+      cancelBtn.textContent = "Cancel";
+      cancelBtn.style.backgroundColor = "black";
+      cancelBtn.style.color = "#fff";
+      cancelBtn.onclick = closeModal;
+      modalButtons.appendChild(cancelBtn);
+    }
+
+    // Show modal
+    modal.style.display = "block";
+    setTimeout(() => {
+      modal.style.opacity = "1";
+      modal.querySelector(".custom-modal-content").style.transform =
+        "translateY(0)";
+    }, 10);
+
+    // Close when clicking outside content
+    modal.onclick = (e) => {
+      if (e.target === modal) closeModal();
+    };
+
+    // Close when clicking X
+    modalClose.onclick = closeModal;
+
+    function closeModal() {
+      modal.style.opacity = "0";
+      modal.querySelector(".custom-modal-content").style.transform =
+        "translateY(-50px)";
+      setTimeout(() => {
+        modal.style.display = "none";
+      }, 300);
+    }
+  }
+</script>

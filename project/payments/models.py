@@ -1,3 +1,4 @@
+# payments/models.py
 from django.db import models
 from django.conf import settings
 from antiques.models import Antique
@@ -17,6 +18,7 @@ class Order(models.Model):
     stripe_session_id = models.CharField(max_length=255, blank=True, null=True)
     status = models.CharField(max_length=20, choices=STATUS_CHOICES, default='pending')
     created_at = models.DateTimeField(auto_now_add=True)
+    stripe_invoice_pdf = models.URLField(blank=True, null=True)  # PDF download link
 
     def __str__(self):
         return f"Order {self.id} by {self.user}"
