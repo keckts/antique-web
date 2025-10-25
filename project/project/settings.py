@@ -15,10 +15,10 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 SECRET_KEY = 'django-insecure-v%%c)t2gpw$7j2b@i8j7zjc5r-m#8-d$(nfo$z6ld%*t!3ju(k'
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = False
 
 #ALLOWED_HOSTS = ['51bd774e683f.ngrok-free.app', 'localhost', 'localhost:8000', '127.0.0.1']
-ALLOWED_HOSTS = ['*'] # WARNING: CHANGE IN PRODUCTION
+ALLOWED_HOSTS = ['https://edwardsemporium.com.au/'] # WARNING: CHANGE IN PRODUCTION
 
 CSRF_TRUSTED_ORIGINS = [
     "https://localhost:8000",
@@ -95,13 +95,7 @@ DATABASES = {
 
 AUTH_PASSWORD_VALIDATORS = [
     {
-        'NAME': 'django.contrib.auth.password_validation.UserAttributeSimilarityValidator',
-    },
-    {
         'NAME': 'django.contrib.auth.password_validation.MinimumLengthValidator',
-    },
-    {
-        'NAME': 'django.contrib.auth.password_validation.CommonPasswordValidator',
     },
     {
         'NAME': 'django.contrib.auth.password_validation.NumericPasswordValidator',
@@ -147,19 +141,10 @@ STRIPE_SECRET_KEY = os.getenv('STRIPE_SECRET_KEY')
 STRIPE_PUBLISHABLE_KEY = os.getenv('STRIPE_PUBLISHABLE_KEY')
 STRIPE_WEBHOOK_SECRET = os.getenv('STRIPE_WEBHOOK_SECRET')
 
-
-
-# Use SMTP backend to send real emails
+# settings.py
 EMAIL_BACKEND = "django.core.mail.backends.smtp.EmailBackend"
-
-# SMTP server settings (Gmail example)
 EMAIL_HOST = "smtp.gmail.com"
+EMAIL_USE_TLS = True
 EMAIL_PORT = 587
-EMAIL_USE_TLS = True  # Gmail requires TLS
-
-# Authentication credentials
-EMAIL_HOST_USER = os.getenv('EMAIL_USER')
-EMAIL_HOST_PASSWORD = os.getenv('EMAIL_PASS')
-
-# Default "from" email address
-DEFAULT_FROM_EMAIL = EMAIL_HOST_USER
+EMAIL_HOST_USER = os.getenv("EMAIL_HOST_USER")        # Your Gmail address
+EMAIL_HOST_PASSWORD = os.getenv('EMAIL_HOST_PASSWORD') # App password

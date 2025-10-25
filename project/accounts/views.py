@@ -1,17 +1,113 @@
-from django.shortcuts import render
-
 # accounts/views.py
 from django.shortcuts import render, redirect
-from django.contrib.auth import login, authenticate, update_session_auth_hash, get_user_model
+from django.contrib.auth import login, authenticate, update_session_auth_hash, get_user_model, logout
+from django.contrib.auth.decorators import login_required
+from django.contrib.auth.forms import AuthenticationForm
 from django.http import JsonResponse
-
-from django.contrib.auth import logout
-from .forms import LoginForm, SellerForm, SettingsForm, SignUpForm
+from django.views.decorators.http import require_POST
+from django.core.mail import send_mail
+from django.utils import timezone
+from datetime import timedelta
+from decouple import config
 import json
+import secrets
+
+from .forms import LoginForm, SellerForm, SettingsForm, SignUpForm
+from .models import EmailVerification, PasswordReset
+from .utils import generate_verification_code
 from service.models import Subscriber
 
+EMAIL_HOST_USER = config('EMAIL_HOST_USER')
+EMAIL_HOST_PASSWORD = config('EMAIL_HOST_PASSWORD')
 
 User = get_user_model()
+
+
+# ------------------------------
+# Email Utility Functions
+# ------------------------------
+
+def send_email_helper(subject, html_message, recipient_email, plain_text_message=None):
+    """
+    Centralized email sending function using Gmail configuration.
+    
+    Args:
+        subject: Email subject line
+        html_message: HTML content of the email
+        recipient_email: Recipient's email address
+        plain_text_message: Optional plain text fallback message
+    
+    Returns:
+        bool: True if email sent successfully, False otherwise
+    """
+    try:
+        send_mail(
+            subject=subject,
+            message=plain_text_message or "Please view this email in HTML format.",
+            from_email=EMAIL_HOST_USER,
+            recipient_list=[recipient_email],
+            html_message=html_message,
+            fail_silently=False,
+        )
+        return True
+    except Exception as e:
+        print(f"Email sending failed to {recipient_email}: {e}")
+        return False
+
+
+def send_verification_email(user, code):
+    """Send verification code email to user"""
+    subject = "Verify Your Email Address"
+    html_message = f"""
+    <html>
+        <body style="font-family: Arial, sans-serif; line-height: 1.6; color: #333;">
+            <div style="max-width: 600px; margin: 0 auto; padding: 20px;">
+                <h2 style="color: #4CAF50;">Email Verification</h2>
+                <p>Hello {user.username},</p>
+                <p>Your verification code is:</p>
+                <div style="background-color: #f5f5f5; padding: 15px; text-align: center; font-size: 24px; font-weight: bold; letter-spacing: 5px; margin: 20px 0;">
+                    {code}
+                </div>
+                <p>This code will expire in 30 minutes.</p>
+                <p>If you didn't request this verification, please ignore this email.</p>
+                <hr style="border: none; border-top: 1px solid #ddd; margin: 20px 0;">
+                <p style="font-size: 12px; color: #666;">This is an automated message, please do not reply.</p>
+            </div>
+        </body>
+    </html>
+    """
+    plain_text = f"Your verification code is: {code}\nThis code will expire in 30 minutes."
+    
+    return send_email_helper(subject, html_message, user.email, plain_text)
+
+
+def send_password_reset_email(user, reset_url):
+    """Send password reset email to user"""
+    subject = "Password Reset Request"
+    html_message = f"""
+    <html>
+        <body style="font-family: Arial, sans-serif; line-height: 1.6; color: #333;">
+            <div style="max-width: 600px; margin: 0 auto; padding: 20px;">
+                <h2 style="color: #2196F3;">Password Reset</h2>
+                <p>Hello {user.username},</p>
+                <p>We received a request to reset your password. Click the button below to create a new password:</p>
+                <div style="text-align: center; margin: 30px 0;">
+                    <a href="{reset_url}" style="background-color: #2196F3; color: white; padding: 12px 30px; text-decoration: none; border-radius: 5px; display: inline-block;">Reset Password</a>
+                </div>
+                <p>Or copy and paste this link into your browser:</p>
+                <p style="word-break: break-all; color: #666;">{reset_url}</p>
+                <p>This link will expire in 1 hour.</p>
+                <p>If you didn't request a password reset, please ignore this email and your password will remain unchanged.</p>
+                <hr style="border: none; border-top: 1px solid #ddd; margin: 20px 0;">
+                <p style="font-size: 12px; color: #666;">This is an automated message, please do not reply.</p>
+            </div>
+        </body>
+    </html>
+    """
+    plain_text = f"Password reset link: {reset_url}\nThis link will expire in 1 hour."
+    
+    return send_email_helper(subject, html_message, user.email, plain_text)
+
 
 # ------------------------------
 # Authentication Views
@@ -34,16 +130,15 @@ def signup_view(request):
 
     return render(request, 'accounts/signup_page.html', {'form': form})
 
-from django.contrib.auth.forms import AuthenticationForm
 
 def login_view(request):
+    """User login view with AJAX support"""
     if request.method == "POST" and request.headers.get("x-requested-with") == "XMLHttpRequest":
         form = AuthenticationForm(request, data=request.POST)
         if form.is_valid():
             login(request, form.get_user())
             return JsonResponse({"success": True, "redirect": "/dashboard/"})
         else:
-            # Convert form.errors to a simple dict
             errors = {field: [str(e) for e in errs] for field, errs in form.errors.items()}
             return JsonResponse({"success": False, "errors": errors})
     else:
@@ -51,20 +146,32 @@ def login_view(request):
     
     return render(request, "accounts/login_page.html", {"form": form})
 
+
 def logout_view(request):
+    """User logout view"""
     logout(request)
     return redirect('index')
 
-def settings(request):
+
+# ------------------------------
+# User Settings & Profile Views
+# ------------------------------
+
+@login_required
+def settings_view(request):
+    """User settings page"""
     settings_form = SettingsForm(instance=request.user)
     is_email_subscribed = Subscriber.objects.filter(email=request.user.email).exists()
 
-    return render(request, 'accounts/settings/settings.html', 
-                  {'form': settings_form, 
-                   'is_email_subscribed': is_email_subscribed
-                   })
+    return render(request, 'accounts/settings/settings.html', {
+        'form': settings_form, 
+        'is_email_subscribed': is_email_subscribed
+    })
 
+
+@login_required
 def seller_form(request):
+    """Seller registration form"""
     if request.method == "POST":
         form = SellerForm(request.POST)
         if form.is_valid():
@@ -77,39 +184,9 @@ def seller_form(request):
     return render(request, 'accounts/selling/seller_form.html', {'form': form})
 
 
-def verify_password(request):
-    if request.method == "POST":
-        print("method post")
-        password = request.POST.get("password", "")
-        print(f"Password received: {password}")
-        user = authenticate(username=request.user.username, password=password)
-        return JsonResponse({"valid": user is not None})
-
-    return JsonResponse({"error": "Invalid request method"}, status=400)
-
-def reset_password(request):
-    if request.method == "POST":
-        data = json.loads(request.body)
-        new_password = data.get("new_password", "")
-        if new_password:
-            request.user.set_password(new_password)
-            request.user.save()
-            update_session_auth_hash(request, request.user)  # Keep the user logged in
-            return JsonResponse({"success": True})
-        else:
-            return JsonResponse({"success": False, "error": "New password not provided"})
-    return JsonResponse({"error": "Invalid request method"}, status=400)
-
-# accounts/views.py
-from django.shortcuts import render, redirect
-from django.contrib.auth.decorators import login_required
-from django.http import JsonResponse
-from django.views.decorators.http import require_POST
-from .models import EmailVerification
-from .utils import generate_verification_code, send_verification_email
-from django.utils import timezone
-from datetime import timedelta
-import json
+# ------------------------------
+# Email Verification Views
+# ------------------------------
 
 @login_required
 @require_POST
@@ -128,24 +205,28 @@ def send_verification_code_ajax(request):
             }
         )
         
-        # For testing: print to console
+        # Print to console for testing
         print(f"Verification code for {request.user.email}: {code}")
         
-        # Send email (comment out if not configured)
-        try:
-            send_verification_email(request.user, code)
-        except Exception as e:
-            print(f"Email sending failed: {e}")
+        # Send email
+        email_sent = send_verification_email(request.user, code)
+        
+        if email_sent:
+            message = 'Verification code sent! Check your email.'
+        else:
+            message = 'Verification code generated but email failed to send. Check console.'
         
         return JsonResponse({
             'success': True,
-            'message': 'Verification code sent! Check your email and console.'
+            'message': message
         })
     except Exception as e:
+        print(f"Error in send_verification_code_ajax: {e}")
         return JsonResponse({
             'success': False,
             'message': f'Error sending code: {str(e)}'
         }, status=500)
+
 
 @login_required
 @require_POST
@@ -180,8 +261,9 @@ def verify_email_ajax(request):
                 verification.save()
                 
                 # Update user model if you have is_email_verified field
-                request.user.is_email_verified = True
-                request.user.save()
+                if hasattr(request.user, 'is_email_verified'):
+                    request.user.is_email_verified = True
+                    request.user.save()
                 
                 return JsonResponse({
                     'success': True,
@@ -200,10 +282,16 @@ def verify_email_ajax(request):
             })
             
     except Exception as e:
+        print(f"Error in verify_email_ajax: {e}")
         return JsonResponse({
             'success': False,
             'message': f'Error: {str(e)}'
         }, status=500)
+
+
+# ------------------------------
+# Password Management Views
+# ------------------------------
 
 @login_required
 @require_POST
@@ -218,7 +306,6 @@ def verify_password(request):
                 'message': 'Please enter a password.'
             })
         
-        # Check if password is correct
         is_valid = request.user.check_password(password)
         
         return JsonResponse({
@@ -227,12 +314,53 @@ def verify_password(request):
         })
         
     except Exception as e:
+        print(f"Error in verify_password: {e}")
         return JsonResponse({
             'valid': False,
             'message': f'Error: {str(e)}'
         }, status=500)
 
-# Password Reset Views
+
+@login_required
+@require_POST
+def reset_password(request):
+    """Reset password for logged-in user"""
+    try:
+        data = json.loads(request.body)
+        new_password = data.get("new_password", "")
+        
+        if not new_password:
+            return JsonResponse({
+                "success": False, 
+                "error": "New password not provided"
+            })
+        
+        if len(new_password) < 8:
+            return JsonResponse({
+                "success": False,
+                "error": "Password must be at least 8 characters long"
+            })
+        
+        request.user.set_password(new_password)
+        request.user.save()
+        update_session_auth_hash(request, request.user)  # Keep user logged in
+        
+        return JsonResponse({"success": True})
+        
+    except json.JSONDecodeError:
+        print("Error decoding JSON in reset_password")
+        return JsonResponse({
+            "success": False,
+            "error": "Invalid JSON data"
+        }, status=400)
+    except Exception as e:
+        print(f"Error in reset_password: {e}")
+        return JsonResponse({
+            "success": False,
+            "error": str(e)
+        }, status=500)
+
+
 @require_POST
 def request_password_reset(request):
     """Handle password reset request via AJAX"""
@@ -256,9 +384,6 @@ def request_password_reset(request):
             })
         
         # Check rate limiting (60 seconds)
-        from datetime import timedelta
-        from .models import PasswordReset
-        
         recent_request = PasswordReset.objects.filter(
             user=user,
             created_at__gte=timezone.now() - timedelta(seconds=60)
@@ -272,37 +397,40 @@ def request_password_reset(request):
             })
         
         # Generate reset token
-        import secrets
         token = secrets.token_urlsafe(32)
         
         # Create password reset record
-        PasswordReset.objects.create(
-            user=user,
-            token=token
-        )
+        PasswordReset.objects.create(user=user, token=token)
         
-        # For testing: print to console
-        reset_url = f"http://localhost:8000/accounts/reset-password/{token}/"
+        # Generate reset URL
+        reset_url = request.build_absolute_uri(f'/accounts/reset-password/{token}/')
+        
+        # Print to console for testing
         print(f"Password reset link for {user.email}: {reset_url}")
         
-        # TODO: Send email with reset link
-        # send_password_reset_email(user, reset_url)
+        # Send email
+        email_sent = send_password_reset_email(user, reset_url)
+        
+        if email_sent:
+            message = 'Password reset link sent! Check your email.'
+        else:
+            message = 'Password reset link generated but email failed to send. Check console.'
         
         return JsonResponse({
             'success': True,
-            'message': 'Password reset link sent! Check your email and console.'
+            'message': message
         })
         
     except Exception as e:
+        print(f"Error in request_password_reset: {e}")
         return JsonResponse({
             'success': False,
             'message': f'Error: {str(e)}'
         }, status=500)
 
+
 def reset_password_page(request, token):
     """Display password reset page"""
-    from .models import PasswordReset
-    
     try:
         reset_request = PasswordReset.objects.get(token=token)
         
@@ -343,4 +471,9 @@ def reset_password_page(request, token):
     except PasswordReset.DoesNotExist:
         return render(request, 'accounts/password_reset_invalid.html', {
             'message': 'Invalid password reset link.'
+        })
+    except Exception as e:
+        print(f"Error in reset_password_page: {e}")
+        return render(request, 'accounts/password_reset_invalid.html', {
+            'message': 'An error occurred. Please try again.'
         })

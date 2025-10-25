@@ -33,3 +33,26 @@ def send_verification_email(user, code):
 
 def generate_verification_code():
     return f"{random.randint(100000, 999999)}"
+
+import requests
+from django.conf import settings
+
+def send_mailerlite_email(to_email, subject, html_content):
+    url = "https://api.mailerlite.com/api/v2/email/send"
+    headers = {
+        "Content-Type": "application/json",
+        "X-MailerLite-ApiKey": settings.MAILERLITE_API_KEY,
+    }
+    payload = {
+        "subject": subject,
+        "from": {"email": "edwardsemporiumau@gmail.com", "name": "Edward's Emporium"},
+        "to": [{"email": to_email}],
+        "html": html_content,
+    }
+
+    response = requests.post(url, json=payload, headers=headers)
+    if response.status_code == 200:
+        return True
+    else:
+        print(response.text)
+        return False

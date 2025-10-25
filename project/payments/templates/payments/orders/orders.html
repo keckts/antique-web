@@ -1,120 +1,128 @@
-{% extends "dashboard/base.html" %}
-{% load static %}
-
-{% block content %}
-<link rel="stylesheet" href="{% static 'css/payments/orders.css' %}">
+{% extends "dashboard/base.html" %} {% load static %} {% block content %}
+<link rel="stylesheet" href="{% static 'css/payments/orders.css' %}" />
 
 <div class="orders-container">
   <div class="orders-wrapper">
     <div class="orders-header">
-        <h1 class="orders-title">My Orders</h1>
-        <a href="{% url 'payments:stripe_customer_portal' %}" class="customer-portal-btn" style="background-color: black;">
-            <i class="fa-solid fa-user-cog"></i>
-            View Customer Portal
-        </a>
+      <h1 class="orders-title">My Orders</h1>
+      <a
+        href="{% url 'payments:stripe_customer_portal' %}"
+        class="customer-portal-btn"
+        style="background-color: black"
+      >
+        <i class="fa-solid fa-user-cog"></i>
+        View Customer Portal
+      </a>
     </div>
 
-    <br><br>
+    <br /><br />
 
     {% if stripe_orders %}
-      <div class="orders-grid">
-        {% for entry in stripe_orders %}
-          {% with order=entry.order stripe=entry.stripe %}
-            <div class="order-card">
-              <!-- Order Header -->
-              <div class="order-header">
-                <div>
-                  <div class="order-id">Order #{{ order.id }}</div>
-                  <div class="order-date">{{ order.created_at|date:"F j, Y \a\t g:i A" }}</div>
-                </div>
-                {% if stripe.status %}
-                  <span class="payment-status {{ stripe.status|lower }}">
-                    {% if order.status == 'paid' %}
-  <i class="fa-solid fa-check-circle" style="color: #4CAF50;"></i> Paid
-{% elif order.status == 'pending' %}
-  <i class="fa-solid fa-clock" style="color: #FF9800;"></i> Pending
-{% elif order.status == 'canceled' %}
-  <i class="fa-solid fa-exclamation-circle" style="color: #F44336;"></i> Canceled
-{% endif %}
+    <div class="orders-grid">
+      {% for entry in stripe_orders %}
+      <!-- Commented out for clarity -->
+      {% with order=entry.order stripe=entry.stripe %}
+      <div class="order-card">
+        <!-- Order Header -->
+        <div class="order-header">
+          <div>
+            <div class="order-id">Order #{{ order.id }}</div>
+            <div class="order-date">
+              {{ order.created_at|date:"F j, Y \a\t g:i A" }}
+            </div>
+          </div>
+          {% if stripe.status %}
+          <span class="payment-status {{ stripe.status|lower }}">
+            {% if order.status == 'paid' %}
+            <i class="fa-solid fa-check-circle" style="color: #4caf50"></i> Paid
+            {% elif order.status == 'pending' %}
+            <i class="fa-solid fa-clock" style="color: #ff9800"></i> Pending {%
+            elif order.status == 'canceled' %}
+            <i
+              class="fa-solid fa-exclamation-circle"
+              style="color: #f44336"
+            ></i>
+            Canceled {% endif %}
+          </span>
+          {% endif %}
+        </div>
 
-                  </span>
-                {% endif %}
-              </div>
+        <!-- Order Items -->
+        <div class="order-items">
+          {% for item in order.orderitem_set.all %}
+          <div class="order-item">
+            {% if item.antique.images.first %}
+            <img
+              src="{{ item.antique.images.first.image.url }}"
+              alt="{{ item.antique.title }}"
+              class="item-image"
+            />
+            {% else %}
+            <div class="item-placeholder">
+              <i class="fa-solid fa-image"></i>
+            </div>
+            {% endif %}
 
-              <!-- Order Items -->
-              <div class="order-items">
-                {% for item in order.orderitem_set.all %}
-                  <div class="order-item">
-                    {% if item.antique.images.first %}
-                      <img
-                        src="{{ item.antique.images.first.image.url }}"
-                        alt="{{ item.antique.title }}"
-                        class="item-image"
-                      />
-                    {% else %}
-                      <div class="item-placeholder">
-                        <i class="fa-solid fa-image"></i>
-                      </div>
-                    {% endif %}
-
-                    <div class="item-details">
-                      <div class="item-title">{{ item.antique.title }}</div>
-                      <div class="item-meta">
-                        <span class="item-quantity">
-                          <i class="fa-solid fa-times"></i>
-                          {{ item.quantity }}
-                        </span>
-                        <span class="item-price">
-                          <i class="fa-solid fa-dollar-sign"></i>
-                          {{ item.antique.price|floatformat:2 }}
-                        </span>
-                      </div>
-                    </div>
-                  </div>
-                {% endfor %}
-              </div>
-
-              <!-- Order Footer -->
-              <div class="order-footer">
-                {% if stripe.amount_received %}
-                  <div class="order-total">
-                    Total Paid: ${{ stripe.amount_received|floatformat:2 }}
-                  </div>
-                {% endif %}
-
-                <div class="order-actions">
-                  {% if stripe.receipt_url %}
-                    <a href="{{ stripe.receipt_url }}" target="_blank" class="order-receipt-link">
-                      <i class="fa-solid fa-download"></i>
-                      Receipt
-                    </a>
-                  {% endif %}
-
-                  {% if order.stripe_invoice_pdf %}
-                    <a href="{{ order.stripe_invoice_pdf }}" target="_blank" class="order-invoice-link">
-                    <i class="fa-solid fa-file-pdf"></i>
-                      View Invoice
-                    </a>
-                  {% endif %}
-                </div>
+            <div class="item-details">
+              <div class="item-title">{{ item.antique.title }}</div>
+              <div class="item-meta">
+                <span class="item-quantity">
+                  <i class="fa-solid fa-times"></i>
+                  {{ item.quantity }}
+                </span>
+                <span class="item-price">
+                  <i class="fa-solid fa-dollar-sign"></i>
+                  {{ item.antique.price|floatformat:2 }}
+                </span>
               </div>
             </div>
-          {% endwith %}
-        {% endfor %}
+          </div>
+          {% endfor %}
+        </div>
+
+        <!-- Order Footer -->
+        <div class="order-footer">
+          {% if stripe.amount_received %}
+          <div class="order-total">
+            Total Paid: ${{ stripe.amount_received|floatformat:2 }}
+          </div>
+          {% endif %}
+
+          <div class="order-actions">
+            {% if stripe.receipt_url %}
+            <a
+              href="{{ stripe.receipt_url }}"
+              target="_blank"
+              class="order-receipt-link"
+            >
+              <i class="fa-solid fa-download"></i>
+              Receipt
+            </a>
+            {% endif %} {% if order.stripe_invoice_pdf %}
+            <a
+              href="{{ order.stripe_invoice_pdf }}"
+              target="_blank"
+              class="order-invoice-link"
+            >
+              <i class="fa-solid fa-file-pdf"></i>
+              View Invoice
+            </a>
+            {% endif %}
+          </div>
+        </div>
       </div>
+      {% endwith %} {% endfor %}
+    </div>
     {% else %}
-      <div class="empty-state">
-        <i class="fa-solid fa-shopping-bag"></i>
-        <h3>No orders yet</h3>
-        <p>When you make your first purchase, your orders will appear here.</p>
-        <a href="{% url 'antiques:view_antiques' %}" class="customer-portal-btn">
-          <i class="fa-solid fa-shopping-cart"></i>
-          Start Shopping
-        </a>
-      </div>
+    <div class="empty-state">
+      <i class="fa-solid fa-shopping-bag"></i>
+      <h3>No orders yet</h3>
+      <p>When you make your first purchase, your orders will appear here.</p>
+      <a href="{% url 'antiques:view_antiques' %}" class="customer-portal-btn">
+        Start Shopping
+      </a>
+    </div>
     {% endif %}
-
-
   </div>
 </div>
 {% endblock %}

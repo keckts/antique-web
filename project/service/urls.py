@@ -22,4 +22,6 @@ urlpatterns = [
 
     path('admin-panel/', views.admin_panel, name='admin_panel'),
 
+
+
 ]
